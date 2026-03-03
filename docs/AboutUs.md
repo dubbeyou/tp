@@ -52,7 +52,7 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 ### LI KEHAN
 
-<img src="images/kehan-li2.png.png" width="200px">
+<img src="images/kehan-li2.png" width="200px">
 
 [[github](https://github.com/kehan-li2)]
 

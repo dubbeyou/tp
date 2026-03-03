@@ -11,15 +11,14 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 ## Project team
 
-### John Doe
+### Chong Wei Jun
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/dubbeyou.png" width="200px">
 
-[[homepage](http://www.comp.nus.edu.sg/~damithch)]
-[[github](https://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
+[[github](https://github.com/dubbeyou)]
 
-* Role: Project Advisor
+* Role: Code Quality + Testing
+* Responsibilities:  Ensure adherence to coding standards and ensures testing is done properly.
 
 ### Jane Doe
 

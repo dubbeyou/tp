@@ -300,30 +300,106 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ### Use cases
 
-(For all use cases below, the **System** is the `AddressBook` and the **Actor** is the `user`, unless specified otherwise)
+(For all use cases below, the **System** is the `CareSync` and the **Actor** is the `user`, unless specified otherwise)
 
-**Use case: Delete a person**
+**Use case: UC1 - Add Contact**
+
+**Guarantee:**
+- If successful, the contact will be stored and visible in the contact list.
+- A duplicate contact will never be added.
+- Malformed contacts based on invalid command entry will never be added.
 
 **MSS**
 
-1.  User requests to list persons
-2.  AddressBook shows a list of persons
-3.  User requests to delete a specific person in the list
-4.  AddressBook deletes the person
+1.  User enters the required details to add a contact.
+2.  CareSync validates the entered data.
+3.  CareSync stores the new contact.
+4.  CareSync displays a success message.
 
     Use case ends.
 
 **Extensions**
 
-* 2a. The list is empty.
+* 2a. CareSync detects invalid input format.
+   * 2a1. CareSync displays an error message.
+   * 2a2. User re-enters data.
+     
+     Steps 2a1–2a2 are repeated until the data entered is valid.
+     
+     Use case resumes from step 3.
 
-  Use case ends.
 
-* 3a. The given index is invalid.
+* 2b. CareSync detects existing contact.
 
-    * 3a1. AddressBook shows an error message.
+    * 2b1. CareSync notifies the user that the contact already exists.
+    * 2b2. User re-enters data.
 
-      Use case resumes at step 2.
+      Steps 2b1–2b2 are repeated until the data entered is valid.
+     
+      Use case resumes from step 3.
+
+**Use case: UC2 - Update Contact**
+
+**Precondition:**
+A contact exists in CareSync.
+
+**Guarantee:**
+If successful, the selected contact’s details will be updated and saved.
+
+**MSS**
+
+1.  CareSync displays contact(s).
+2.  User specifies the ID of the contact and fields to be updated (e.g., phone number or address).
+3.  CareSync validates the new data.
+4.  CareSync updates the contact information.
+5.  CareSync displays a success message.
+
+    Use case ends.
+
+**Extensions**
+
+* 3a. No matching contact is found.
+   * 3a1. CareSync informs the user that no match exists.
+     
+     Use case ends.
+
+
+* 3b. CareSync detects invalid input format.
+
+    * 3b1. CareSync displays an error message.
+    * 3b2. User re-enters data.
+
+      Steps 3b1–3b2 are repeated until the data entered is valid.
+     
+      Use case resumes from step 4.
+
+**Use case: UC3 - Delete Contact**
+
+**Precondition:**
+A contact exists in CareSync.
+
+**Guarantee:**
+If successful, the contact will be permanently removed from CareSync.
+
+**MSS**
+
+1.  CareSync displays contact(s).
+2.  User specifies the ID of the contact to be deleted.
+3.  CareSync validates the contact’s existence.
+4.  CareSync removes the contact from storage.
+5.  CareSync displays a success message and an updated list.
+
+    Use case ends.
+
+**Extensions**
+
+* 3a. User entered an invalid ID.
+   * 3a1. CareSync displays an error message.
+   * 3a2. User re-enters data.
+     
+     Steps 3a1–3a2 are repeated until the data entered is valid.
+     
+     Use case resumes from step 4.
 
 *{More to be added}*
 

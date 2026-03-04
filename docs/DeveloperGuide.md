@@ -450,13 +450,13 @@ If successful, the contact will be permanently removed from CareSync.
 
 **Extensions**
 
-* 2a. Not matching contact is found.
+* 2a. No matching contact is found.
 
     * 2a1. CareSync displays a message indicating no results.
 
       Use case ends.
 
-**Use case: UC5- Search Contact via Tag**
+**Use case: UC5 - Search Contact via Tag**
 
 **Guarantee:** Matching contact(s), if any, are displayed to the user.
 
@@ -471,13 +471,13 @@ If successful, the contact will be permanently removed from CareSync.
 
 **Extensions**
 
-* 2a. Not matching contact is found.
+* 2a. No matching contact is found.
 
     * 2a1. CareSync displays a message indicating no results.
 
       Use case ends.
 
-**Use case: UC6- Set Visit Date and Time**
+**Use case: UC6 - Set Visit Date and Time**
 
 **Precondition:** Contact exists in CareSync.
 
@@ -531,7 +531,7 @@ commands or data fields) without requiring major restructuring of existing compo
 
 ### Glossary
 
-* **Mainstream OS**: Windows, Linux, Unix, MacOS
+* **Mainstream OS**: Windows, Linux, Unix, MacOS.
 * **Tag**: A label that can be assigned to a contact to categorise them.
 * **ID**: The currently displayed list number of the specific contact.
 * **Case ID**: A Case ID is a unique identifier assigned to a specific client 

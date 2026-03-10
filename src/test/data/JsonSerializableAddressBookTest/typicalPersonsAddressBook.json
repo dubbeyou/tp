@@ -11,7 +11,8 @@
     "phone" : "98765432",
     "email" : "johnd@example.com",
     "address" : "311, Clementi Ave 2, #02-25",
-    "tags" : [ "owesMoney", "friends" ]
+    "tags" : [ "owesMoney", "friends"],
+    "visitDateTime" : "2026-12-01 14:00"
   }, {
     "name" : "Carl Kurz",
     "phone" : "95352563",

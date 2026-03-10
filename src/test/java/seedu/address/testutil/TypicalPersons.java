@@ -25,12 +25,11 @@ public class TypicalPersons {
 
     public static final Person ALICE = new PersonBuilder().withName("Alice Pauline")
             .withAddress("123, Jurong West Ave 6, #08-111").withEmail("alice@example.com")
-            .withPhone("94351253")
-            .withTags("friends").build();
+            .withPhone("94351253").withTags("friends").build();
     public static final Person BENSON = new PersonBuilder().withName("Benson Meier")
             .withAddress("311, Clementi Ave 2, #02-25")
             .withEmail("johnd@example.com").withPhone("98765432")
-            .withTags("owesMoney", "friends").build();
+            .withTags("owesMoney", "friends").withVisitDateTime("2026-12-01 14:00").build();
     public static final Person CARL = new PersonBuilder().withName("Carl Kurz").withPhone("95352563")
             .withEmail("heinz@example.com").withAddress("wall street").build();
     public static final Person DANIEL = new PersonBuilder().withName("Daniel Meier").withPhone("87652533")
@@ -54,8 +53,6 @@ public class TypicalPersons {
     public static final Person BOB = new PersonBuilder().withName(VALID_NAME_BOB).withPhone(VALID_PHONE_BOB)
             .withEmail(VALID_EMAIL_BOB).withAddress(VALID_ADDRESS_BOB).withTags(VALID_TAG_HUSBAND, VALID_TAG_FRIEND)
             .build();
-
-    public static final String KEYWORD_MATCHING_MEIER = "Meier"; // A keyword that matches MEIER
 
     private TypicalPersons() {} // prevents instantiation
 

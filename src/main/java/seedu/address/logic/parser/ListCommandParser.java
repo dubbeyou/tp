@@ -11,6 +11,8 @@ import seedu.address.logic.parser.exceptions.ParseException;
  */
 public class ListCommandParser implements Parser<ListCommand> {
 
+    private static final String SORT_BY_NAME = "name";
+
     /**
      * Parses the given {@code String} of arguments in the context of the ListCommand
      * and returns a ListCommand object for execution.
@@ -24,10 +26,10 @@ public class ListCommandParser implements Parser<ListCommand> {
 
         String sortField = argMultimap.getValue(PREFIX_SORT)
                 .map(String::trim)
+                .map(String::toLowerCase)
                 .orElse("");
 
-        if (!sortField.isEmpty()
-                && !sortField.equals("name")) {
+        if (!sortField.isEmpty() && !SORT_BY_NAME.equals(sortField)) {
 
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_USAGE));

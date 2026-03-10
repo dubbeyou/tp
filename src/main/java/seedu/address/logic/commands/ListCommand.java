@@ -1,6 +1,7 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_SORT;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
 import seedu.address.model.Model;
@@ -18,9 +19,9 @@ public class ListCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Lists all persons in the address book.\n"
             + "Optionally sorts the list.\n"
-            + "Parameters: s/FIELD (FIELD: name)\n"
-            + "Example: list\n"
-            + "Example: list s/name";
+            + "Parameters: [" + PREFIX_SORT + "Field]\n"
+            + "Example: " + COMMAND_WORD + "\n"
+            + "Example: " + COMMAND_WORD + " s/name";
 
     private final String sortField;
 

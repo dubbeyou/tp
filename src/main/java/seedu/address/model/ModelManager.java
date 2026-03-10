@@ -167,4 +167,9 @@ public class ModelManager implements Model {
 
         sortedPersons.setComparator(comparator);
     }
+
+    @Override
+    public void resetSort() {
+        sortedPersons.setComparator(null);
+    }
 }

@@ -93,4 +93,8 @@ public interface Model {
      */
     void sortFilteredPersonList(String field);
 
+    /**
+     * Resets the sorting of the filtered person list.
+     */
+    void resetSort();
 }

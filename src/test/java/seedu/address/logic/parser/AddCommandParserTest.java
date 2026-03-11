@@ -72,7 +72,7 @@ public class AddCommandParserTest {
 
     @Test
     public void parse_allFieldsIncludingVisitDateTime_success() {
-        Person expectedPerson = new PersonBuilder(BOB).withTags(VALID_TAG_FRIEND)
+        Person expectedPerson = new PersonBuilder(BOB).withNote("").withTags(VALID_TAG_FRIEND)
                 .withVisitDateTime(VALID_VISIT_BOB).build();
 
         // with visit date time
@@ -239,6 +239,7 @@ public class AddCommandParserTest {
     @Test
     public void parse_visitDateTimeWithMultipleTags_success() {
         Person expectedPerson = new PersonBuilder(BOB)
+                .withNote("")
                 .withTags(VALID_TAG_HUSBAND, VALID_TAG_FRIEND)
                 .withVisitDateTime(VALID_VISIT_BOB)
                 .build();

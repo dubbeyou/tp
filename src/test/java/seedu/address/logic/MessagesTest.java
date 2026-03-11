@@ -25,7 +25,7 @@ public class MessagesTest {
                 .build();
 
         String expected = "Alice Pauline; Phone: 94351253; Email: alice@example.com; Address: "
-                + "123, Jurong West Ave 6, #08-111; Tags: [friends]";
+                + "123, Jurong West Ave 6, #08-111; Note: ; Tags: [friends]";
 
         assertEquals(expected, Messages.format(person));
     }
@@ -42,7 +42,7 @@ public class MessagesTest {
                 .build();
 
         String expected = "Benson Meier; Phone: 98765432; Email: johnd@example.com; Address: "
-                + "311, Clementi Ave 2, #02-25; Next Visit: 01 Dec 2026, 02:00 PM; Tags: [friends]";
+                + "311, Clementi Ave 2, #02-25; Note: ; Next Visit: 01 Dec 2026, 02:00 PM; Tags: [friends]";
 
         assertEquals(expected, Messages.format(person));
     }

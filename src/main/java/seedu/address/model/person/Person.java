@@ -43,12 +43,14 @@ public class Person {
     /**
      * Constructor with optional visitDateTime field.
      */
-    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, VisitDateTime visitDateTime) {
-        requireAllNonNull(name, phone, email, address, tags, visitDateTime);
+    public Person(Name name, Phone phone, Email email, Address address, Note note, Set<Tag> tags,
+                  VisitDateTime visitDateTime) {
+        requireAllNonNull(name, phone, email, address, note, tags, visitDateTime);
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
+        this.note = note;
         this.tags.addAll(tags);
         this.visitDateTime = visitDateTime;
     }

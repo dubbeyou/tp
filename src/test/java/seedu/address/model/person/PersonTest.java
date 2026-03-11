@@ -125,9 +125,11 @@ public class PersonTest {
                 + ", phone=" + aliceWithVisitDateTime.getPhone()
                 + ", email=" + aliceWithVisitDateTime.getEmail()
                 + ", address=" + aliceWithVisitDateTime.getAddress()
+                + ", note=" + aliceWithVisitDateTime.getNote()
                 + ", tags=" + aliceWithVisitDateTime.getTags()
                 + ", visitDateTime=" + aliceWithVisitDateTime.getVisitDateTime()
                 + "}";
+
         assertEquals(expected, aliceWithVisitDateTime.toString());
     }
 }

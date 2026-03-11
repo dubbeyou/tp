@@ -26,7 +26,6 @@ public class FindCommandParser implements Parser<FindCommand> {
 
         // Checks if there exist any tags for finding
         if (argMultimap.getValue(PREFIX_NAME).isPresent()) {
-
             String keyword = argMultimap.getValue(PREFIX_NAME).get();
             NameContainsKeywordsPredicate predicate =
                     new NameContainsKeywordsPredicate(Arrays.asList(keyword.split("\\s+")));
@@ -34,11 +33,11 @@ public class FindCommandParser implements Parser<FindCommand> {
             return new FindCommand(predicate);
 
         } else if (argMultimap.getValue(PREFIX_TAG).isPresent()) {
-
             String tag = argMultimap.getValue(PREFIX_TAG).get();
             TagContainsPredicate predicate = new TagContainsPredicate(tag);
 
             return new FindCommand(predicate);
+
         } else {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
         }

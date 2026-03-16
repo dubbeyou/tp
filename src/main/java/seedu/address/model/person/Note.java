@@ -32,6 +32,13 @@ public class Note {
         return test.matches(VALIDATION_REGEX);
     }
 
+    /**
+     * Returns true if this VisitDateTime has a value.
+     */
+    public boolean isPresent() {
+        return !value.isEmpty();
+    }
+
     @Override
     public String toString() {
         return value;

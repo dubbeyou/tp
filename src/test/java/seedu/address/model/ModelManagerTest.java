@@ -175,7 +175,7 @@ public class ModelManagerTest {
 
         Person personWithoutVisit = new PersonBuilder()
                 .withName("No Visit")
-                .build(); // default = no visit
+                .build();
 
         AddressBook addressBook = new AddressBookBuilder()
                 .withPerson(personWithLaterVisit)

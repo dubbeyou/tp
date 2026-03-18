@@ -16,6 +16,7 @@ import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Note;
+import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.VisitDateTime;
 
@@ -113,12 +114,13 @@ public class JsonAdaptedPersonTest {
     }
 
     @Test
-    public void toModelType_nullNote_throwsIllegalValueException() {
+    public void toModelType_nullNote_createsDefaultNote() throws Exception {
         JsonAdaptedPerson person = new JsonAdaptedPerson(
                 VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS,
                 null, VALID_TAGS, VALID_VISIT_DATE_TIME);
-        String expectedMessage = String.format(MISSING_FIELD_MESSAGE_FORMAT, Note.class.getSimpleName());
-        assertThrows(IllegalValueException.class, expectedMessage, person::toModelType);
+
+        Person modelPerson = person.toModelType();
+        assertEquals(new Note(""), modelPerson.getNote());
     }
 
     @Test

@@ -111,13 +111,16 @@ class JsonAdaptedPerson {
         }
         final Address modelAddress = new Address(address);
 
+        // Ensures backwards compatibility for old application version
+        final Note modelNote;
         if (note == null) {
-            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Note.class.getSimpleName()));
+            modelNote = new Note(""); // default value
+        } else {
+            if (!Note.isValidNote(note)) {
+                throw new IllegalValueException(Note.MESSAGE_CONSTRAINTS);
+            }
+            modelNote = new Note(note);
         }
-        if (!Note.isValidNote(note)) {
-            throw new IllegalValueException(Note.MESSAGE_CONSTRAINTS);
-        }
-        final Note modelNote = new Note(note);
 
         // Handle optional visitDateTime field
         final VisitDateTime modelVisitDateTime;

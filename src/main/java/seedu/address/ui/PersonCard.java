@@ -58,7 +58,7 @@ public class PersonCard extends UiPart<Region> {
 
         String noteRecord = person.getNote().value;
         if (noteRecord == null || noteRecord.trim().isEmpty()) {
-            note.setText("--- No notes record ---");
+            note.setText("---No Notes Record---");
         } else {
             note.setText(noteRecord);
         }

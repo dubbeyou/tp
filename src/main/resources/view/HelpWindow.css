@@ -75,11 +75,17 @@
 }
 
 .help-code-block {
-    -help-code-color: #9ad0ff;
-    -fx-text-fill: -help-code-color;
     -fx-font-family: "Courier New";
     -fx-font-size: 15;
     -fx-background-color: #2a2a2a;
     -fx-padding: 10;
+}
+
+.help-code-block-usage {
+    -fx-text-fill: #9ad0ff;
+}
+
+.help-code-block-example {
+    -fx-text-fill: #ffd479;
 }
 

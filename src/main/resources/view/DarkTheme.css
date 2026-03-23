@@ -328,6 +328,13 @@
     -fx-text-fill: white;
 }
 
+.autocomplete-ghost-text {
+    -fx-font-family: "Segoe UI Light";
+    -fx-font-size: 13pt;
+    -fx-text-fill: #7a7a7a;
+    -fx-padding: 0;
+}
+
 #filterField, #personListPanel, #personWebpage {
     -fx-effect: innershadow(gaussian, black, 10, 0, 0, 0);
 }

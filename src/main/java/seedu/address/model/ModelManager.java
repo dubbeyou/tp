@@ -102,11 +102,13 @@ public class ModelManager implements Model {
         addressBook.removePerson(target);
     }
 
+    @Override
     public void archivePerson(Person person) {
         requireNonNull(person);
         person.setArchived(true);
     }
 
+    @Override
     public void unarchivePerson(Person person) {
         requireNonNull(person);
         person.setArchived(false);

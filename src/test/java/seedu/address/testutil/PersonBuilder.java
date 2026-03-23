@@ -118,6 +118,9 @@ public class PersonBuilder {
         return this;
     }
 
+    /**
+     * Sets the {@code isArchived} of the {@code Person} that we are building.
+     */
     public PersonBuilder withArchived(boolean archived) {
         this.isArchived = archived;
         return this;

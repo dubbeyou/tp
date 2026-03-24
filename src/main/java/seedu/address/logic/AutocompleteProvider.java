@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
+import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.DeleteCommand;
@@ -32,6 +32,8 @@ import seedu.address.logic.commands.TagCommand;
  * Provides context-aware command line autocompletion suggestions.
  */
 public final class AutocompleteProvider {
+
+    private static final String EMPTY_STRING = "";
 
     private static final List<String> COMMAND_WORDS = List.of(
             AddCommand.COMMAND_WORD,
@@ -119,15 +121,15 @@ public final class AutocompleteProvider {
     }
 
     private static Optional<String> suggestCommandCompletion(String input) {
-        List<String> matches = COMMAND_WORDS.stream()
+        Optional<String> firstMatch = COMMAND_WORDS.stream()
                 .filter(command -> command.startsWith(input))
-                .collect(Collectors.toList());
+                .findFirst();
 
-        if (matches.isEmpty()) {
+        if (firstMatch.isEmpty()) {
             return Optional.empty();
         }
 
-        String match = matches.get(0);
+        String match = firstMatch.get();
         if (match.equals(input)) {
             return Optional.empty();
         }
@@ -178,17 +180,17 @@ public final class AutocompleteProvider {
         }
 
         String filterArgs = targetArgs;
-        List<String> matches = config.prefixes().stream()
+        Optional<String> firstMatch = config.prefixes().stream()
                 .filter(prefix -> prefix.startsWith(lastToken))
                 .filter(prefix -> !containsPrefixToken(filterArgs, prefix)
                 || config.repeatablePrefixes().contains(prefix))
-                .collect(Collectors.toList());
+            .findFirst();
 
-        if (matches.isEmpty()) {
+        if (firstMatch.isEmpty()) {
             return Optional.empty();
         }
 
-        String match = matches.get(0);
+        String match = firstMatch.get();
         if (match.equals(lastToken)) {
             return Optional.empty();
         }
@@ -217,11 +219,21 @@ public final class AutocompleteProvider {
     }
 
     private static boolean containsPrefixToken(String value, String prefix) {
-        return value.startsWith(prefix) || value.contains(" " + prefix);
+        if (value.startsWith(prefix)) {
+            return true;
+        }
+
+        for (int i = 0; i < value.length() - 1; i++) {
+            if (Character.isWhitespace(value.charAt(i)) && value.startsWith(prefix, i + 1)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static boolean hasIndexToken(String args) {
-        return isPositiveInteger(firstToken(args));
+        return StringUtil.isNonZeroUnsignedInteger(firstToken(args));
     }
 
     private static String removeIndexToken(String args) {
@@ -229,7 +241,7 @@ public final class AutocompleteProvider {
         String trimmed = args.stripLeading();
         int tokenEnd = tokenEndIndex(trimmed);
         if (tokenEnd >= trimmed.length()) {
-            return "";
+            return EMPTY_STRING;
         }
 
         return trimmed.substring(tokenEnd).stripLeading();
@@ -251,20 +263,6 @@ public final class AutocompleteProvider {
         }
 
         return value.length();
-    }
-
-    private static boolean isPositiveInteger(String value) {
-        if (value.isEmpty()) {
-            return false;
-        }
-
-        for (int i = 0; i < value.length(); i++) {
-            if (!Character.isDigit(value.charAt(i))) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     private static boolean containsWhitespace(String value) {

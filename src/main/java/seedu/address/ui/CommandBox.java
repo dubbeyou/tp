@@ -19,6 +19,7 @@ import seedu.address.logic.parser.exceptions.ParseException;
 public class CommandBox extends UiPart<Region> {
 
     public static final String ERROR_STYLE_CLASS = "error";
+    private static final String EMPTY_TEXT = "";
     private static final double AUTOCOMPLETE_HINT_OFFSET = 12.0;
     private static final String FXML = "CommandBox.fxml";
 
@@ -41,7 +42,6 @@ public class CommandBox extends UiPart<Region> {
         commandTextField.caretPositionProperty().addListener((unused1, unused2, unused3) -> updateAutocompleteHint());
         commandTextField.focusedProperty().addListener((unused1, unused2, unused3) -> updateAutocompleteHint());
         commandTextField.addEventFilter(KeyEvent.KEY_PRESSED, this::handleTabKeyEventFilter);
-        commandTextField.addEventFilter(KeyEvent.KEY_RELEASED, this::handleTabKeyEventFilter);
         commandTextField.setOnKeyPressed(this::handleCommandBoxKeyPress);
         clearAutocompleteHint();
     }
@@ -63,7 +63,7 @@ public class CommandBox extends UiPart<Region> {
     @FXML
     private void handleCommandEntered() {
         String commandText = commandTextField.getText();
-        if (commandText.equals("")) {
+        if (commandText.isEmpty()) {
             return;
         }
 
@@ -71,7 +71,7 @@ public class CommandBox extends UiPart<Region> {
 
         try {
             commandExecutor.execute(commandText);
-            setCommandText("");
+            setCommandText(EMPTY_TEXT);
         } catch (CommandException | ParseException e) {
             setStyleToIndicateCommandFailure();
         }
@@ -85,10 +85,6 @@ public class CommandBox extends UiPart<Region> {
         } else if (event.getCode() == KeyCode.DOWN) {
             recalled = commandHistory.navigateDown();
         } else {
-            if (event.getCode() == KeyCode.TAB) {
-                acceptAutocompleteSuggestion();
-                event.consume();
-            }
             return;
         }
 
@@ -149,7 +145,7 @@ public class CommandBox extends UiPart<Region> {
     }
 
     private void clearAutocompleteHint() {
-        autocompleteHintLabel.setText("");
+        autocompleteHintLabel.setText(EMPTY_TEXT);
         autocompleteHintLabel.setTranslateX(AUTOCOMPLETE_HINT_OFFSET);
     }
 

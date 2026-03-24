@@ -49,7 +49,8 @@ public class TagCommandTest {
         // Use the constructor directly to avoid PersonBuilder string conversion issues
         Person editedPerson = new Person(
                 firstPerson.getName(), firstPerson.getPhone(), firstPerson.getEmail(),
-                firstPerson.getAddress(), firstPerson.getNote(), expectedTags);
+                firstPerson.getAddress(), firstPerson.getNote(), expectedTags, firstPerson.getVisitDateTime(),
+                firstPerson.isArchived());
 
         String expectedMessage = String.format(TagCommand.MESSAGE_TAG_PERSON_SUCCESS,
                 Messages.format(editedPerson));

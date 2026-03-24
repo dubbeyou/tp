@@ -50,7 +50,7 @@ public class DeleteCommand extends Command {
         List<Integer> invalidIndexes = new ArrayList<>();
 
         for (Index index : targetIndexes) {
-            if (index.getZeroBased() < 0 || index.getZeroBased() >= lastShownList.size()) {
+            if (index.getZeroBased() >= lastShownList.size()) {
                 invalidIndexes.add(index.getOneBased());
             }
         }

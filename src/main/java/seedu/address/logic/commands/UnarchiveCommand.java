@@ -12,37 +12,45 @@ import seedu.address.model.Model;
 import seedu.address.model.person.Person;
 
 /**
- * Archives a person identified using it's displayed index from the address book.
+ * Unarchives a person identified using its displayed index.
  */
-public class ArchiveCommand extends Command {
+public class UnarchiveCommand extends Command {
 
-    public static final String COMMAND_WORD = "archive";
+    public static final String COMMAND_WORD = "unarchive";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Archives the person identified by the index number. "
-            + "Parameters: INDEX (must be a positive integer)\n"
+    public static final String MESSAGE_USAGE = COMMAND_WORD
+            + ": Unarchives the person identified by the index number.\n"
+            + "Parameters: INDEX\n"
             + "Example: " + COMMAND_WORD + " 1";
 
-    public static final String MESSAGE_ARCHIVE_PERSON_SUCCESS = "Archived: %1$s";
+    public static final String MESSAGE_UNARCHIVE_PERSON_SUCCESS = "Unarchived: %1$s";
 
     private final Index targetIndex;
 
-    public ArchiveCommand(Index targetIndex) {
+    public UnarchiveCommand(Index targetIndex) {
         this.targetIndex = targetIndex;
     }
 
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
-        List<Person> lastShownList = model.getFilteredPersonList();
 
-        if (targetIndex.getZeroBased() >= lastShownList.size()) {
+        List<Person> archivedList = model.getFilteredPersonList();
+
+        if (targetIndex.getZeroBased() >= archivedList.size()) {
             throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
         }
 
-        Person personToArchive = lastShownList.get(targetIndex.getZeroBased());
-        model.archivePerson(personToArchive);
+        Person personToUnarchive = archivedList.get(targetIndex.getZeroBased());
+
+        model.unarchivePerson(personToUnarchive);
+
+        // Refresh view to show only active persons again
         model.updateFilteredPersonList(p -> !p.isArchived());
-        return new CommandResult(String.format(MESSAGE_ARCHIVE_PERSON_SUCCESS, Messages.format(personToArchive)));
+
+        return new CommandResult(
+                String.format(MESSAGE_UNARCHIVE_PERSON_SUCCESS,
+                        Messages.format(personToUnarchive)));
     }
 
     @Override
@@ -50,14 +58,12 @@ public class ArchiveCommand extends Command {
         if (other == this) {
             return true;
         }
-
-        // instanceof handles nulls
-        if (!(other instanceof ArchiveCommand)) {
+        if (!(other instanceof UnarchiveCommand)) {
             return false;
         }
 
-        ArchiveCommand otherArchiveCommand = (ArchiveCommand) other;
-        return targetIndex.equals(otherArchiveCommand.targetIndex);
+        UnarchiveCommand otherUnarchiveCommand = (UnarchiveCommand) other;
+        return targetIndex.equals(otherUnarchiveCommand.targetIndex);
     }
 
     @Override

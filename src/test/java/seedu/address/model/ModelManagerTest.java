@@ -242,5 +242,15 @@ public class ModelManagerTest {
         assertFalse(person.isArchived());
     }
 
+    @Test
+    public void predicateShowAllPersons_filtersArchivedPersons() {
+        Person active = new PersonBuilder(ALICE).build();
+        Person archived = new PersonBuilder(BENSON).build();
+        archived.setArchived(true);
+
+        assertTrue(PREDICATE_SHOW_ALL_PERSONS.test(active));
+        assertFalse(PREDICATE_SHOW_ALL_PERSONS.test(archived));
+    }
+
 }
 

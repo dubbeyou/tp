@@ -65,6 +65,11 @@ public class DeleteCommand extends Command {
             );
         }
 
+        assert targetIndexes.stream()
+                .allMatch(i -> i.getZeroBased() >= 0
+                        && i.getZeroBased() < lastShownList.size())
+                : "All indexes should be valid after validation";
+
         // Sort descending to prevent index shifting issues
         List<Index> sortedIndexes = new ArrayList<>(targetIndexes);
         sortedIndexes.sort((a, b) -> Integer.compare(b.getZeroBased(), a.getZeroBased()));
@@ -75,6 +80,10 @@ public class DeleteCommand extends Command {
             if (deletedPersonsMessage.length() > 0) {
                 deletedPersonsMessage.append("\n");
             }
+
+            assert index.getZeroBased() < lastShownList.size()
+                    : "Index should be within bounds";
+
             Person personToDelete = lastShownList.get(index.getZeroBased());
             model.deletePerson(personToDelete);
             deletedPersonsMessage.append(Messages.format(personToDelete));

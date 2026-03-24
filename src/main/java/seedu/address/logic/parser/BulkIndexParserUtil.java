@@ -120,7 +120,6 @@ public final class BulkIndexParserUtil {
         if (value <= 0) {
             throw new ParseException(MESSAGE_INVALID_INDEX);
         }
-
         indexSet.add(value);
     }
 }

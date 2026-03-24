@@ -7,13 +7,13 @@ import static java.util.Objects.requireNonNull;
  */
 public class Note {
 
-    public static final String MESSAGE_CONSTRAINTS = "Notes can be any values, and it should not be null";
+    public static final String MESSAGE_CONSTRAINTS = "Notes should be up to 150 characters "
+        + "and contain only alphanumeric characters, spaces, commas, and full stops";
 
     /*
-     * Allows up to 500 characters consisting of letters, numbers, punctuation,
-     * symbols, spaces, tabs, and line breaks.
+     * Allows up to 150 characters consisting of letters, numbers, spaces, commas, and full stops.
      */
-    public static final String VALIDATION_REGEX = "^[\\p{L}\\p{N}\\p{P}\\p{S}\\p{Zs}\\r\\n\\t]{0,500}$";
+    public static final String VALIDATION_REGEX = "^[a-zA-Z0-9,. ]{0,150}$";
     public final String value;
 
     /**

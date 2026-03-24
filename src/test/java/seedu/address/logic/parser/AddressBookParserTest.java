@@ -75,6 +75,11 @@ public class AddressBookParserTest {
         NoteCommand command = (NoteCommand) parser.parseCommand(
                 NoteCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased() + " nt/test");
         assertEquals(new NoteCommand(INDEX_FIRST_PERSON, new Note("test")), command);
+
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, NoteCommand.MESSAGE_USAGE), () -> {
+                    parser.parseCommand(NoteCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased());
+                });
     }
 
     @Test

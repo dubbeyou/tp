@@ -21,9 +21,14 @@ public class NoteTest {
 
         // valid notes
         assertTrue(Note.isValidNote("")); // empty string
-        assertTrue(Note.isValidNote(" ")); // spaces only
-        assertTrue(Note.isValidNote("Likes baseball")); // alphabets
+        assertTrue(Note.isValidNote("Likes baseball")); // alphabets with spaces
         assertTrue(Note.isValidNote("12345678")); // numbers
+        assertTrue(Note.isValidNote("Note,with,fullstop.")); // comma and full stop
+        assertTrue(Note.isValidNote("Has spaces")); // spaces are allowed
+
+        // invalid notes
+        assertFalse(Note.isValidNote("note!")); // unsupported punctuation
+        assertFalse(Note.isValidNote("line\nbreak")); // line breaks are not allowed
     }
 
     @Test

@@ -2,6 +2,7 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTE;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
 import java.util.List;
@@ -19,11 +20,14 @@ import seedu.address.model.person.Person;
 public class NoteCommand extends Command {
 
     public static final String COMMAND_WORD = "note";
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the note of the person identified "
+    public static final String MESSAGE_USAGE = COMMAND_WORD
+            + ": Edits the note of the person identified "
             + "by the index number used in the last person listing.\n"
             + "Existing note will be overwritten by the input.\n"
-            + "Parameters: INDEX (must be a positive number) nt/ [NOTE]\n"
-            + "Example: " + COMMAND_WORD + " 1 nt/ To help apply for financial aid";
+            + "To remove an existing note, provide an empty note value.\n"
+            + "Parameters: INDEX (must be a positive integer) " + PREFIX_NOTE + "[NOTE]\n"
+            + "Example: " + COMMAND_WORD + " 1 " + PREFIX_NOTE + "To help apply for financial aid\n"
+            + "Example: " + COMMAND_WORD + " 1 " + PREFIX_NOTE;
     public static final String MESSAGE_ADD_NOTE_SUCCESS = "Added note to Person: %1$s";
     public static final String MESSAGE_DELETE_NOTE_SUCCESS = "Removed note from Person: %1$s";
     private final Index index;

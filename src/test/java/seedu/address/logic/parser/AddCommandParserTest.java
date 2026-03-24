@@ -77,6 +77,7 @@ public class AddCommandParserTest {
 
         // explicit note
         Person expectedPersonWithNote = new PersonBuilder(BOB)
+                .withNote(VALID_NOTE_BOB)
                 .withTags(VALID_TAG_FRIEND)
                 .build();
         assertParseSuccess(parser, PREAMBLE_WHITESPACE + NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB

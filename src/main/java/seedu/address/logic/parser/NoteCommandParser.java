@@ -23,6 +23,7 @@ public class NoteCommandParser implements Parser<NoteCommand> {
     public NoteCommand parse(String args) throws ParseException {
         requireNonNull(args);
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_NOTE);
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NOTE);
         Index index;
 
         try {
@@ -30,6 +31,11 @@ public class NoteCommandParser implements Parser<NoteCommand> {
         } catch (IllegalValueException ive) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                     NoteCommand.MESSAGE_USAGE), ive);
+        }
+
+        if (argMultimap.getValue(PREFIX_NOTE).isEmpty()) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                    NoteCommand.MESSAGE_USAGE));
         }
 
         String note = argMultimap.getValue(PREFIX_NOTE).orElse("");

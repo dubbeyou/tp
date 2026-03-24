@@ -284,11 +284,11 @@ _{Explain here how the data archiving feature will be implemented}_
 * values speed and efficiency over complex graphical interfaces
 * wants all visit-related information consolidated in one place
 
-**Value proposition**: Currently, social workers rely on a combination of paper notebooks, 
-calendars and messaging apps to track who they are visiting, where it takes place and the 
-purpose or outcome of each visit. This fragmentation increases administrative workload, 
-raises the risk of missed follow-ups or incomplete records, and reduces overall efficiency. 
-CareSync helps social service workers keep track of their clients and service contact 
+**Value proposition**: Currently, social workers rely on a combination of paper notebooks,
+calendars and messaging apps to track who they are visiting, where it takes place and the
+purpose or outcome of each visit. This fragmentation increases administrative workload,
+raises the risk of missed follow-ups or incomplete records, and reduces overall efficiency.
+CareSync helps social service workers keep track of their clients and service contact
 details as well as allow them to easily track upcoming visits with the various families.
 
 
@@ -355,9 +355,9 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
    * 2a1. CareSync displays an error message.
    * 2a2. User re-enters data.
-     
+
      Steps 2a1–2a2 are repeated until the data entered is valid.
-     
+ 
      Use case resumes from step 3.
 
 
@@ -367,7 +367,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     * 2b2. User re-enters data.
 
       Steps 2b1–2b2 are repeated until the data entered is valid.
-     
+
       Use case resumes from step 3.
 
 **Use case: UC2 - Update Contact**
@@ -393,7 +393,7 @@ If successful, the selected contact’s details will be updated and saved.
 * 3a. No matching contact is found.
 
    * 3a1. CareSync informs the user that no match exists.
-     
+
      Use case ends.
 
 
@@ -403,7 +403,7 @@ If successful, the selected contact’s details will be updated and saved.
     * 3b2. User re-enters data.
 
       Steps 3b1–3b2 are repeated until the data entered is valid.
-     
+
       Use case resumes from step 4.
 
 **Use case: UC3 - Delete Contact**
@@ -430,9 +430,9 @@ If successful, the contact will be permanently removed from CareSync.
 
    * 3a1. CareSync displays an error message.
    * 3a2. User re-enters data.
-     
+
      Steps 3a1–3a2 are repeated until the data entered is valid.
-     
+
      Use case resumes from step 4.
 
 **Use case: UC4 - Search Contact via Name**
@@ -508,12 +508,12 @@ If successful, the contact will be permanently removed from CareSync.
 
 ### Non-Functional Requirements
 
-1. Should work on any mainstream OS as long as it has Java 17 or above installed. 
-2. A user with above average typing speed for regular English text (i.e. not code, not system 
-admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse. 
+1. Should work on any mainstream OS as long as it has Java 17 or above installed.
+2. A user with above average typing speed for regular English text (i.e. not code, not system
+admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
 3. The system should respond to user commands within 2 seconds under normal usage.
 4. The system should support at least 20 contacts without noticeable performance degradation.
-5. Filtering and search operations should complete within 2 seconds. 
+5. Filtering and search operations should complete within 2 seconds.
 6. The system should be able to load stored data within 3 seconds upon startup.
 7. The application should not crash upon receiving malformed data.
 8. Error messages shall be clear and actionable (e.g., specify which field is invalid).
@@ -521,10 +521,10 @@ admin commands) should be able to accomplish most of the tasks faster using comm
 10. The system shall automatically persist data after every valid modification.
 11. Completed visits shall not be modified without explicit action.
 12. Contact names shall not be empty.
-13. Phone numbers shall follow a defined format. 
-14. Dates and times shall follow a consistent format. 
+13. Phone numbers shall follow a defined format.
+14. Dates and times shall follow a consistent format.
 15. Duplicate contacts shall not be allowed unless explicitly permitted.
-14. The system architecture should allow future expansion of features (e.g., additional 
+14. The system architecture should allow future expansion of features (e.g., additional
 commands or data fields) without requiring major restructuring of existing components.
 
 *{More to be added}*
@@ -534,9 +534,9 @@ commands or data fields) without requiring major restructuring of existing compo
 * **Mainstream OS**: Windows, Linux, Unix, MacOS.
 * **Tag**: A label that can be assigned to a contact to categorise them.
 * **ID**: The currently displayed list number of the specific contact.
-* **Case ID**: A Case ID is a unique identifier assigned to a specific client 
-case or record within CareSync. It allows users to track and reference a particular 
-case efficiently, ensuring that all family members that are associated with the 
+* **Case ID**: A Case ID is a unique identifier assigned to a specific client
+case or record within CareSync. It allows users to track and reference a particular
+case efficiently, ensuring that all family members that are associated with the
 clients are displayed.
 * **Command**: An instruction entered by the user to execute a specific action.
 

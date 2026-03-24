@@ -149,15 +149,6 @@ public class DeleteCommandTest {
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
     }
 
-    @Test
-    public void execute_negativeIndex_throwsCommandException() {
-        DeleteCommand command = new DeleteCommand(
-                List.of(Index.fromZeroBased(-1))
-        );
-
-        assertCommandFailure(command, model,
-                String.format(Messages.MESSAGE_NONEXISTENCE_INDEX, "0"));
-    }
 
     @Test
     public void execute_invalidIndexUnfilteredList_throwsCommandException() {

@@ -173,7 +173,7 @@ public class ParserUtil {
         try {
             return LocalDate.parse(trimmedDate);
         } catch (DateTimeParseException e) {
-            throw new ParseException("Dates must be in YYYY-MM-DD format!");
+            throw new ParseException(VisitDateTime.MESSAGE_DATE_CONSTRAINTS);
         }
     }
 }

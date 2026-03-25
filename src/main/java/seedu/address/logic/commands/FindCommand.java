@@ -27,11 +27,11 @@ public class FindCommand extends Command {
             + "Parameters: \n"
             + "1. " + PREFIX_NAME + "NAME [ADDITIONAL NAMES] \n"
             + "2. " + PREFIX_TAG + "TAG \n"
-            + "3. " + PREFIX_DATE + "today | DATE (Find visits for today or a specific date YYYY-MM-DD) \n"
+            + "3. " + PREFIX_DATE + "today OR DATE (Find visits for today or a specific date YYYY-MM-DD) \n"
             + "4. " + PREFIX_START_DATE + "START_DATE " + PREFIX_END_DATE + "END_DATE (Find visits within a range) \n"
             + "Example: " + COMMAND_WORD + " " + PREFIX_NAME + "NAME \n"
             + "Example: " + COMMAND_WORD + " " + PREFIX_TAG + "TAG \n"
-            + "Example: " + COMMAND_WORD + " " + PREFIX_DATE + "today | 2026-12-01 \n"
+            + "Example: " + COMMAND_WORD + " " + PREFIX_DATE + "today OR 2026-12-01 \n"
             + "Example: " + COMMAND_WORD + " " + PREFIX_START_DATE + "2026-01-01 " + PREFIX_END_DATE + "2026-12-31";
 
     private final Predicate<Person> predicate;

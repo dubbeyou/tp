@@ -37,16 +37,46 @@ public class DeleteCommand extends Command {
      */
     public DeleteCommand(List<Index> targetIndexes) {
         requireNonNull(targetIndexes);
-        //this.targetIndexes = Collections.unmodifiableList(new ArrayList<>(targetIndexes));
         this.targetIndexes = List.copyOf(targetIndexes);
     }
 
+    /**
+     * Executes the delete command by removing the specified persons from the model.
+     *
+     * <p>All indices are validated first to ensure the operation is atomic (i.e. no partial deletion occurs).</p>
+     *
+     * @param model the model containing the filtered list of persons
+     * @return a {@code CommandResult} containing the formatted details of deleted persons
+     * @throws CommandException if any index is out of bounds
+     */
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
         List<Person> lastShownList = model.getFilteredPersonList();
 
-        // Validate ALL indices first (atomic safety)
+        validateIndexesExist(lastShownList);
+
+        assert targetIndexes.stream()
+                .allMatch(i -> i.getZeroBased() >= 0
+                        && i.getZeroBased() < lastShownList.size())
+                : "All indexes should be valid after validation";
+
+        List<Index> sortedIndexes = toDescendingIndexes(targetIndexes);
+
+        String messageBody = deletePersonsAndFormat(model, lastShownList, sortedIndexes);
+
+        return new CommandResult(
+                String.format(MESSAGE_DELETE_PERSONS_SUCCESS, messageBody)
+        );
+    }
+
+    /**
+     * Validates that all target indexes exist within the current filtered person list.
+     *
+     * @param lastShownList the current filtered list of persons
+     * @throws CommandException if any index is out of bounds
+     */
+    private void validateIndexesExist(List<Person> lastShownList) throws CommandException {
         List<Integer> invalidIndexes = new ArrayList<>();
 
         for (Index index : targetIndexes) {
@@ -64,20 +94,35 @@ public class DeleteCommand extends Command {
                     String.format(MESSAGE_NONEXISTENCE_INDEX, joined)
             );
         }
+    }
 
-        assert targetIndexes.stream()
-                .allMatch(i -> i.getZeroBased() >= 0
-                        && i.getZeroBased() < lastShownList.size())
-                : "All indexes should be valid after validation";
-
-        // Sort descending to prevent index shifting issues
-        List<Index> sortedIndexes = new ArrayList<>(targetIndexes);
+    /**
+     * Returns a new list of indexes sorted in descending order of their zero-based values.
+     *
+     * <p>This prevents index shifting issues during deletion.</p>
+     *
+     * @param indexes the list of indexes to sort
+     * @return a new list of indexes sorted in descending order
+     */
+    private List<Index> toDescendingIndexes(List<Index> indexes) {
+        List<Index> sortedIndexes = new ArrayList<>(indexes);
         sortedIndexes.sort((a, b) -> Integer.compare(b.getZeroBased(), a.getZeroBased()));
+        return sortedIndexes;
+    }
 
+    /**
+     * Deletes the persons at the specified indexes and formats them into a result string.
+     *
+     * @param model the model used to perform deletions
+     * @param lastShownList the current filtered list of persons
+     * @param indexes the list of indexes to delete (must be valid and sorted in descending order)
+     * @return a formatted string of deleted persons
+     */
+    private String deletePersonsAndFormat(Model model, List<Person> lastShownList, List<Index> indexes) {
         StringBuilder deletedPersonsMessage = new StringBuilder();
 
-        for (Index index : sortedIndexes) {
-            if (deletedPersonsMessage.length() > 0) {
+        for (Index index : indexes) {
+            if (!deletedPersonsMessage.isEmpty()) {
                 deletedPersonsMessage.append("\n");
             }
 
@@ -89,9 +134,7 @@ public class DeleteCommand extends Command {
             deletedPersonsMessage.append(Messages.format(personToDelete));
         }
 
-        return new CommandResult(
-                String.format(MESSAGE_DELETE_PERSONS_SUCCESS, deletedPersonsMessage)
-        );
+        return deletedPersonsMessage.toString();
     }
 
     @Override

@@ -29,34 +29,79 @@ public final class BulkIndexParserUtil {
     /**
      * Parses a string of indices and ranges into a list of {@code Index}.
      *
-     * @param args user input arguments
-     * @return list of unique, sorted {@code Index}
-     * @throws ParseException if input is invalid
+     * @param args user input arguments containing indices and/or ranges
+     * @return an unmodifiable list of unique {@code Index} objects sorted in ascending order
+     * @throws ParseException if the input is empty or contains invalid tokens, ranges, or indices
      */
     public static List<Index> parseBulkIndexes(String args) throws ParseException {
+        String[] tokens = tokenizeOrThrow(args);
+        Set<Integer> indexSet = collectOneBasedIndexes(tokens);
+        return toSortedUnmodifiableIndexList(indexSet);
+    }
+
+    /**
+     * Tokenizes the input string into individual index or range tokens.
+     *
+     * @param args raw user input
+     * @return array of tokens split by whitespace
+     * @throws ParseException if the input is null or empty
+     */
+    private static String[] tokenizeOrThrow(String args) throws ParseException {
         if (args == null || args.trim().isEmpty()) {
             throw new ParseException(MESSAGE_EMPTY_INPUT);
         }
+        return args.trim().split("\\s+");
+    }
 
-        String[] tokens = args.trim().split("\\s+");
+    /**
+     * Parses all tokens and collects valid one-based indices into a set.
+     *
+     * @param tokens array of input tokens representing indices or ranges
+     * @return a set of unique one-based indices
+     * @throws ParseException if any token is invalid
+     */
+    private static Set<Integer> collectOneBasedIndexes(String[] tokens) throws ParseException {
         Set<Integer> indexSet = new HashSet<>();
 
         for (String token : tokens) {
-            if (token.matches("-\\d+")) {
-                throw new ParseException(MESSAGE_INVALID_INDEX);
-            }
-            if (token.contains(RANGE_SEPARATOR)) {
-                parseRangeToken(token, indexSet);
-            } else {
-                parseSingleToken(token, indexSet);
-            }
+            parseTokenIntoSet(token, indexSet);
         }
 
-        // Sort indices in ascending order
+        return indexSet;
+    }
+
+    /**
+     * Parses a single token and adds the resulting indices into the given set.
+     * The token may represent either a single index or a range.
+     *
+     * @param token the input token to parse
+     * @param indexSet the set to store parsed indices
+     * @throws ParseException if the token is invalid
+     */
+    private static void parseTokenIntoSet(String token, Set<Integer> indexSet)
+            throws ParseException {
+
+        if (token.matches("-\\d+")) {
+            throw new ParseException(MESSAGE_INVALID_INDEX);
+        }
+
+        if (token.contains(RANGE_SEPARATOR)) {
+            parseRangeToken(token, indexSet);
+        } else {
+            parseSingleToken(token, indexSet);
+        }
+    }
+
+    /**
+     * Converts a set of one-based integers into a sorted, unmodifiable list of {@code Index}.
+     *
+     * @param indexSet set of one-based indices
+     * @return sorted unmodifiable list of {@code Index}
+     */
+    private static List<Index> toSortedUnmodifiableIndexList(Set<Integer> indexSet) {
         List<Integer> sorted = new ArrayList<>(indexSet);
         Collections.sort(sorted);
 
-        // Convert to Index objects
         List<Index> result = new ArrayList<>();
         for (int i : sorted) {
             result.add(Index.fromOneBased(i));
@@ -65,6 +110,14 @@ public final class BulkIndexParserUtil {
         return Collections.unmodifiableList(result);
     }
 
+    /**
+     * Parses a range token (e.g. "3-5") and adds all indices within the range to the set.
+     *
+     * @param token the range token to parse
+     * @param indexSet the set to store parsed indices
+     * @throws ParseException if the range format is invalid, contains non-numeric values,
+     *                        or violates index constraints
+     */
     private static void parseRangeToken(String token, Set<Integer> indexSet)
             throws ParseException {
 
@@ -104,6 +157,13 @@ public final class BulkIndexParserUtil {
         }
     }
 
+    /**
+     * Parses a single index token and adds it to the set.
+     *
+     * @param token the input token representing a single index
+     * @param indexSet the set to store parsed indices
+     * @throws ParseException if the token is not a valid positive integer
+     */
     private static void parseSingleToken(String token, Set<Integer> indexSet)
             throws ParseException {
 

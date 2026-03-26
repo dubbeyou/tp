@@ -22,9 +22,9 @@ import seedu.address.model.person.VisitContainsDatePredicate;
 public class FindCommandParser implements Parser<FindCommand> {
 
     public static final String MESSAGE_ONLY_ONE_SEARCH_TYPE = "Only one search type allowed.";
-    private static final String KEYWORD_TODAY = "today";
-    private static final String MESSAGE_INVALID_DATE_RANGE = "Start date cannot be after end date!";
-    private static final String MESSAGE_MISSING_DATE_RANGE_PAIR = "Both sd/ and ed/ must be provided together.";
+    public static final String KEYWORD_TODAY = "today";
+    public static final String MESSAGE_INVALID_DATE_RANGE = "Start date cannot be after end date!";
+    public static final String MESSAGE_MISSING_DATE_RANGE_PAIR = "Both sd/ and ed/ must be provided together.";
 
     /**
      * Parses the given {@code String} of arguments in the context of the FindCommand

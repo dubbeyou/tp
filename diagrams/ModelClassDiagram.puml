@@ -19,6 +19,16 @@ Class Email
 Class Name
 Class Phone
 Class Tag
+Class Note
+Class VisitDateTime
+
+note as PersonOptionalFieldsNote
+  Note and VisitDateTime are optional fields for users.
+  Person always contains one Note and one VisitDateTime object.
+  Empty values represent not set.
+end note
+
+Person . PersonOptionalFieldsNote
 
 Class I #FFFFFF
 }
@@ -37,11 +47,14 @@ UserPrefs .up.|> ReadOnlyUserPrefs
 
 AddressBook *--> "1" UniquePersonList
 UniquePersonList --> "~* all" Person
-Person *--> Name
-Person *--> Phone
-Person *--> Email
-Person *--> Address
+Person *--> "1" Name
+Person *--> "1" Phone
+Person *--> "1" Email
+Person *--> "1" Address
+Person *--> "1" Note
+Person *--> "1" VisitDateTime
 Person *--> "*" Tag
+
 
 Person -[hidden]up--> I
 UniquePersonList -[hidden]right-> I

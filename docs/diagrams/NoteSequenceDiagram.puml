@@ -1,0 +1,70 @@
+@startuml
+!include style.puml
+skinparam ArrowColor LOGIC_COLOR
+skinparam BackGroundColor #FFFFFF
+
+
+box "Logic" #LightBlue
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":NoteCommandParser" as NoteCommandParser LOGIC_COLOR
+participant "n:NoteCommand" as NoteCommand LOGIC_COLOR
+participant "r:CommandResult" as CommandResult LOGIC_COLOR
+end box
+
+box "Model" #LightGreen
+participant ":Model" as Model MODEL_COLOR
+end box
+
+[-> LogicManager : execute("note 1 nt/Need Additional Assistance")
+activate LogicManager
+
+LogicManager -> AddressBookParser : parseCommand("note 1 nt/Need Additional Assistance")
+activate AddressBookParser
+
+create NoteCommandParser
+AddressBookParser -> NoteCommandParser
+activate NoteCommandParser
+
+NoteCommandParser --> AddressBookParser
+deactivate NoteCommandParser
+
+AddressBookParser -> NoteCommandParser : parse("1 nt/Need Additional Assistance")
+activate NoteCommandParser
+
+create NoteCommand
+NoteCommandParser -> NoteCommand
+activate NoteCommand
+
+NoteCommand --> NoteCommandParser
+deactivate NoteCommand
+
+NoteCommandParser --> AddressBookParser : n
+deactivate NoteCommandParser
+destroy NoteCommandParser
+
+AddressBookParser --> LogicManager : n
+deactivate AddressBookParser
+
+LogicManager -> NoteCommand : execute()
+activate NoteCommand
+
+NoteCommand -> Model : setPerson(personToEdit, editedPerson)
+activate Model
+
+Model --> NoteCommand
+deactivate Model
+
+create CommandResult
+NoteCommand -> CommandResult
+activate CommandResult
+
+CommandResult --> NoteCommand
+deactivate CommandResult
+
+NoteCommand --> LogicManager : r
+deactivate NoteCommand
+
+[<--LogicManager : r
+deactivate LogicManager
+@enduml

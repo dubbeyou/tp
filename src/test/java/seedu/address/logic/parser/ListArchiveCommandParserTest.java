@@ -10,7 +10,7 @@ import seedu.address.logic.commands.ListArchiveCommand;
 
 public class ListArchiveCommandParserTest {
 
-    private ListArchiveCommandParser parser = new ListArchiveCommandParser();
+    private final ListArchiveCommandParser parser = new ListArchiveCommandParser();
 
     @Test
     public void parse_emptyArgs_success() {

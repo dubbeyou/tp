@@ -1,40 +1,14 @@
 package seedu.address.logic;
 
-import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_ADD_TAG;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_DELETE_TAG;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_END_DATE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_SORT;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_START_DATE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_VISIT;
-
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.util.StringUtil;
-import seedu.address.logic.commands.AddCommand;
-import seedu.address.logic.commands.ArchiveCommand;
-import seedu.address.logic.commands.ClearCommand;
-import seedu.address.logic.commands.DeleteCommand;
-import seedu.address.logic.commands.EditCommand;
-import seedu.address.logic.commands.ExitCommand;
-import seedu.address.logic.commands.FindCommand;
-import seedu.address.logic.commands.HelpCommand;
-import seedu.address.logic.commands.ListArchiveCommand;
-import seedu.address.logic.commands.ListCommand;
-import seedu.address.logic.commands.NoteCommand;
-import seedu.address.logic.commands.TagCommand;
-import seedu.address.logic.commands.UnarchiveCommand;
+import seedu.address.logic.parser.AutocompleteMetadataRegistry;
+import seedu.address.logic.parser.AutocompleteMetadataRegistry.AutocompleteCommandMetadata;
 
 /**
  * Provides context-aware command line autocompletion suggestions.
@@ -45,26 +19,9 @@ public final class AutocompleteProvider {
     private static final String EMPTY_STRING = "";
     private static final String SINGLE_SPACE = " ";
 
-    private static final List<String> NO_PREFIXES = List.of();
     private static final Set<String> NO_REPEATABLE_PREFIXES = Set.of();
 
-    private static final String FIND_NAME_PREFIX = PREFIX_NAME.getPrefix();
-    private static final String FIND_TAG_PREFIX = PREFIX_TAG.getPrefix();
-    private static final String FIND_DATE_PREFIX = PREFIX_DATE.getPrefix();
-    private static final String FIND_START_DATE_PREFIX = PREFIX_START_DATE.getPrefix();
-    private static final String FIND_END_DATE_PREFIX = PREFIX_END_DATE.getPrefix();
-
-    private static final List<String> FIND_PREFIXES = List.of(
-            FIND_NAME_PREFIX, FIND_TAG_PREFIX, FIND_DATE_PREFIX, FIND_START_DATE_PREFIX, FIND_END_DATE_PREFIX);
-
-        private static final List<String> COMMAND_WORDS = createCommandWords();
-
-        private static final Map<String, AutocompletePrefixConfig> AUTOCOMPLETE_PREFIX_CONFIGS = createPrefixConfigs();
-
     private AutocompleteProvider() {}
-
-    private record AutocompletePrefixConfig(boolean requiresIndex,
-            List<String> prefixes, Set<String> repeatablePrefixes) {}
 
     private record FindPrefixState(boolean hasName, boolean hasTag, boolean hasDate,
                                    boolean hasStartDate, boolean hasEndDate) {
@@ -116,15 +73,18 @@ public final class AutocompleteProvider {
     }
 
     private static Optional<String> suggestCommandCompletion(String input) {
-        boolean isExactCommand = COMMAND_WORDS.stream().anyMatch(command -> command.equals(input));
+        assert input != null : "suggestCommandCompletion input must not be null";
+
+        List<String> commandWords = AutocompleteMetadataRegistry.commandWords();
+        boolean isExactCommand = commandWords.stream().anyMatch(command -> command.equals(input));
         if (isExactCommand) {
-            return COMMAND_WORDS.stream()
+            return commandWords.stream()
                     .filter(command -> command.startsWith(input))
                     .filter(command -> !command.equals(input))
                     .findFirst();
         }
 
-        return completeCurrentToken(input, input, COMMAND_WORDS, NO_REPEATABLE_PREFIXES, EMPTY_STRING);
+        return completeCurrentToken(input, input, commandWords, NO_REPEATABLE_PREFIXES, EMPTY_STRING);
     }
 
     private static Optional<String> suggestArgumentCompletion(String input) {
@@ -134,11 +94,13 @@ public final class AutocompleteProvider {
         assert firstWhitespaceIndex >= 0 : "suggestArgumentCompletion expects command + whitespace + args";
         String commandWord = input.substring(0, firstWhitespaceIndex);
 
-        AutocompletePrefixConfig config = AUTOCOMPLETE_PREFIX_CONFIGS.get(commandWord);
-        if (config == null) {
+        Optional<AutocompleteCommandMetadata> configOptional = AutocompleteMetadataRegistry.getMetadata(commandWord);
+        if (configOptional.isEmpty()) {
             logger.fine("No autocomplete config for command word: " + commandWord);
             return Optional.empty();
         }
+
+        AutocompleteCommandMetadata config = configOptional.get();
 
         String args = input.substring(firstWhitespaceIndex).stripLeading();
         Optional<String> targetArgsOptional = extractTargetArgs(args, config.requiresIndex());
@@ -154,7 +116,7 @@ public final class AutocompleteProvider {
         }
 
         String lastToken = lastToken(targetArgs);
-        if (FindCommand.COMMAND_WORD.equals(commandWord)) {
+        if (config.isFindModeExclusive()) {
             return suggestFindPrefixCompletion(input, targetArgs, lastToken, config.prefixes());
         }
 
@@ -179,6 +141,11 @@ public final class AutocompleteProvider {
 
     private static Optional<String> suggestFindPrefixCompletion(
             String input, String args, String lastToken, List<String> prefixes) {
+        assert input != null : "suggestFindPrefixCompletion input must not be null";
+        assert args != null : "suggestFindPrefixCompletion args must not be null";
+        assert lastToken != null : "suggestFindPrefixCompletion lastToken must not be null";
+        assert prefixes != null : "suggestFindPrefixCompletion prefixes must not be null";
+
         FindPrefixState findState = buildFindPrefixState(args);
 
         if (findState.hasIncompleteDateRangePair()) {
@@ -201,18 +168,27 @@ public final class AutocompleteProvider {
     }
 
     private static FindPrefixState buildFindPrefixState(String args) {
+        assert args != null : "buildFindPrefixState args must not be null";
+
         return new FindPrefixState(
-                containsPrefixToken(args, FIND_NAME_PREFIX),
-                containsPrefixToken(args, FIND_TAG_PREFIX),
-                containsPrefixToken(args, FIND_DATE_PREFIX),
-                containsPrefixToken(args, FIND_START_DATE_PREFIX),
-                containsPrefixToken(args, FIND_END_DATE_PREFIX)
+                containsPrefixToken(args, AutocompleteMetadataRegistry.findNamePrefix()),
+                containsPrefixToken(args, AutocompleteMetadataRegistry.findTagPrefix()),
+                containsPrefixToken(args, AutocompleteMetadataRegistry.findDatePrefix()),
+                containsPrefixToken(args, AutocompleteMetadataRegistry.findStartDatePrefix()),
+                containsPrefixToken(args, AutocompleteMetadataRegistry.findEndDatePrefix())
         );
     }
 
     private static Optional<String> suggestMissingFindRangePair(
             String input, String args, String lastToken, FindPrefixState findState) {
-        String requiredPairPrefix = findState.hasStartDate() ? FIND_END_DATE_PREFIX : FIND_START_DATE_PREFIX;
+        assert input != null : "suggestMissingFindRangePair input must not be null";
+        assert args != null : "suggestMissingFindRangePair args must not be null";
+        assert lastToken != null : "suggestMissingFindRangePair lastToken must not be null";
+        assert findState != null : "suggestMissingFindRangePair findState must not be null";
+
+        String requiredPairPrefix = findState.hasStartDate()
+            ? AutocompleteMetadataRegistry.findEndDatePrefix()
+            : AutocompleteMetadataRegistry.findStartDatePrefix();
 
         if (lastToken.isEmpty()) {
             return Optional.of(input + requiredPairPrefix);
@@ -226,6 +202,8 @@ public final class AutocompleteProvider {
     }
 
     private static Optional<String> extractTargetArgs(String args, boolean requiresIndex) {
+        assert args != null : "extractTargetArgs args must not be null";
+
         if (!requiresIndex) {
             return Optional.of(args);
         }
@@ -238,6 +216,9 @@ public final class AutocompleteProvider {
     }
 
     private static Optional<String> suggestFirstPrefix(String input, List<String> prefixes) {
+        assert input != null : "suggestFirstPrefix input must not be null";
+        assert prefixes != null : "suggestFirstPrefix prefixes must not be null";
+
         if (prefixes.isEmpty()) {
             return Optional.empty();
         }
@@ -247,12 +228,21 @@ public final class AutocompleteProvider {
     }
 
     private static boolean hasInvalidFreeTextArgs(String args, List<String> prefixes) {
+        assert args != null : "hasInvalidFreeTextArgs args must not be null";
+        assert prefixes != null : "hasInvalidFreeTextArgs prefixes must not be null";
+
         return !args.isBlank() && !containsAnyPrefixToken(args, prefixes);
     }
 
     private static Optional<String> completeCurrentToken(
             String input, String currentToken, List<String> candidates,
             Set<String> repeatablePrefixes, String existingArgs) {
+        assert input != null : "completeCurrentToken input must not be null";
+        assert currentToken != null : "completeCurrentToken currentToken must not be null";
+        assert candidates != null : "completeCurrentToken candidates must not be null";
+        assert repeatablePrefixes != null : "completeCurrentToken repeatablePrefixes must not be null";
+        assert existingArgs != null : "completeCurrentToken existingArgs must not be null";
+
         Optional<String> firstMatch = candidates.stream()
                 .filter(candidate -> candidate.startsWith(currentToken))
                 .filter(candidate -> isEligibleCandidate(candidate, repeatablePrefixes, existingArgs))
@@ -272,6 +262,10 @@ public final class AutocompleteProvider {
 
     private static boolean isEligibleCandidate(
             String candidate, Set<String> repeatablePrefixes, String existingArgs) {
+        assert candidate != null : "isEligibleCandidate candidate must not be null";
+        assert repeatablePrefixes != null : "isEligibleCandidate repeatablePrefixes must not be null";
+        assert existingArgs != null : "isEligibleCandidate existingArgs must not be null";
+
         if (existingArgs.isEmpty()) {
             return true;
         }
@@ -281,6 +275,9 @@ public final class AutocompleteProvider {
     }
 
     private static boolean containsAnyPrefixToken(String args, List<String> prefixes) {
+        assert args != null : "containsAnyPrefixToken args must not be null";
+        assert prefixes != null : "containsAnyPrefixToken prefixes must not be null";
+
         for (String prefix : prefixes) {
             if (containsPrefixToken(args, prefix)) {
                 return true;
@@ -292,6 +289,10 @@ public final class AutocompleteProvider {
 
     private static Optional<String> nextUnusedPrefix(
             List<String> orderedPrefixes, Set<String> repeatablePrefixes, String args) {
+        assert orderedPrefixes != null : "nextUnusedPrefix orderedPrefixes must not be null";
+        assert repeatablePrefixes != null : "nextUnusedPrefix repeatablePrefixes must not be null";
+        assert args != null : "nextUnusedPrefix args must not be null";
+
         for (String prefix : orderedPrefixes) {
             if (repeatablePrefixes.contains(prefix)) {
                 continue;
@@ -306,6 +307,8 @@ public final class AutocompleteProvider {
     }
 
     private static Optional<String> nextRepeatablePrefix(Set<String> repeatablePrefixes) {
+        assert repeatablePrefixes != null : "nextRepeatablePrefix repeatablePrefixes must not be null";
+
         if (repeatablePrefixes.isEmpty()) {
             return Optional.empty();
         }
@@ -315,6 +318,9 @@ public final class AutocompleteProvider {
     }
 
     private static boolean containsPrefixToken(String value, String prefix) {
+        assert value != null : "containsPrefixToken value must not be null";
+        assert prefix != null : "containsPrefixToken prefix must not be null";
+
         if (value.startsWith(prefix)) {
             return true;
         }
@@ -329,6 +335,7 @@ public final class AutocompleteProvider {
     }
 
     private static boolean hasIndexToken(String args) {
+        assert args != null : "hasIndexToken args must not be null";
         return StringUtil.isNonZeroUnsignedInteger(firstToken(args));
     }
 
@@ -362,10 +369,13 @@ public final class AutocompleteProvider {
     }
 
     private static boolean containsWhitespace(String value) {
+        assert value != null : "containsWhitespace value must not be null";
         return firstWhitespaceIndex(value) >= 0;
     }
 
     private static int firstWhitespaceIndex(String value) {
+        assert value != null : "firstWhitespaceIndex value must not be null";
+
         for (int i = 0; i < value.length(); i++) {
             if (Character.isWhitespace(value.charAt(i))) {
                 return i;
@@ -376,6 +386,8 @@ public final class AutocompleteProvider {
     }
 
     private static String lastToken(String value) {
+        assert value != null : "lastToken value must not be null";
+
         int lastWhitespace = -1;
 
         for (int i = value.length() - 1; i >= 0; i--) {
@@ -388,51 +400,4 @@ public final class AutocompleteProvider {
         return lastWhitespace < 0 ? value : value.substring(lastWhitespace + 1);
     }
 
-    private static List<String> createCommandWords() {
-    return List.of(
-        AddCommand.COMMAND_WORD,
-        ArchiveCommand.COMMAND_WORD,
-        ClearCommand.COMMAND_WORD,
-        DeleteCommand.COMMAND_WORD,
-        EditCommand.COMMAND_WORD,
-        ExitCommand.COMMAND_WORD,
-        FindCommand.COMMAND_WORD,
-        HelpCommand.COMMAND_WORD,
-        ListCommand.COMMAND_WORD,
-        ListArchiveCommand.COMMAND_WORD,
-        NoteCommand.COMMAND_WORD,
-        TagCommand.COMMAND_WORD,
-        UnarchiveCommand.COMMAND_WORD
-    );
-    }
-
-    private static Map<String, AutocompletePrefixConfig> createPrefixConfigs() {
-    return Map.of(
-        AddCommand.COMMAND_WORD, config(false,
-            List.of(PREFIX_NAME.getPrefix(), PREFIX_PHONE.getPrefix(), PREFIX_EMAIL.getPrefix(),
-                PREFIX_ADDRESS.getPrefix(), PREFIX_NOTE.getPrefix(), PREFIX_VISIT.getPrefix(),
-                PREFIX_TAG.getPrefix()),
-            Set.of(PREFIX_TAG.getPrefix())),
-        EditCommand.COMMAND_WORD, config(true,
-            List.of(PREFIX_NAME.getPrefix(), PREFIX_PHONE.getPrefix(), PREFIX_EMAIL.getPrefix(),
-                PREFIX_ADDRESS.getPrefix(), PREFIX_NOTE.getPrefix(), PREFIX_VISIT.getPrefix(),
-                PREFIX_TAG.getPrefix()),
-            Set.of(PREFIX_TAG.getPrefix())),
-        FindCommand.COMMAND_WORD, config(false, FIND_PREFIXES, NO_REPEATABLE_PREFIXES),
-        ListCommand.COMMAND_WORD, config(false,
-            List.of(PREFIX_SORT.getPrefix()), NO_REPEATABLE_PREFIXES),
-        ArchiveCommand.COMMAND_WORD, config(true, NO_PREFIXES, NO_REPEATABLE_PREFIXES),
-        NoteCommand.COMMAND_WORD, config(true,
-            List.of(PREFIX_NOTE.getPrefix()), NO_REPEATABLE_PREFIXES),
-        TagCommand.COMMAND_WORD, config(true,
-            List.of(PREFIX_ADD_TAG.getPrefix(), PREFIX_DELETE_TAG.getPrefix()),
-            Set.of(PREFIX_ADD_TAG.getPrefix(), PREFIX_DELETE_TAG.getPrefix())),
-        UnarchiveCommand.COMMAND_WORD, config(true, NO_PREFIXES, NO_REPEATABLE_PREFIXES)
-    );
-    }
-
-    private static AutocompletePrefixConfig config(
-        boolean requiresIndex, List<String> prefixes, Set<String> repeatablePrefixes) {
-    return new AutocompletePrefixConfig(requiresIndex, prefixes, repeatablePrefixes);
-    }
 }

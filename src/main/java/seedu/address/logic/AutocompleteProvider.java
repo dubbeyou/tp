@@ -43,59 +43,39 @@ public final class AutocompleteProvider {
 
     private static final Logger logger = LogsCenter.getLogger(AutocompleteProvider.class);
     private static final String EMPTY_STRING = "";
+    private static final String SINGLE_SPACE = " ";
 
-    private static final List<String> COMMAND_WORDS = List.of(
-            AddCommand.COMMAND_WORD,
-            ArchiveCommand.COMMAND_WORD,
-            ClearCommand.COMMAND_WORD,
-            DeleteCommand.COMMAND_WORD,
-            EditCommand.COMMAND_WORD,
-            ExitCommand.COMMAND_WORD,
-            FindCommand.COMMAND_WORD,
-            HelpCommand.COMMAND_WORD,
-            ListCommand.COMMAND_WORD,
-            ListArchiveCommand.COMMAND_WORD,
-            NoteCommand.COMMAND_WORD,
-            TagCommand.COMMAND_WORD,
-            UnarchiveCommand.COMMAND_WORD
-    );
+    private static final List<String> NO_PREFIXES = List.of();
+    private static final Set<String> NO_REPEATABLE_PREFIXES = Set.of();
 
-    private static final Map<String, AutocompletePrefixConfig> AUTOCOMPLETE_PREFIX_CONFIGS = Map.of(
-            AddCommand.COMMAND_WORD, new AutocompletePrefixConfig(false,
-                    List.of(PREFIX_NAME.getPrefix(), PREFIX_PHONE.getPrefix(), PREFIX_EMAIL.getPrefix(),
-                            PREFIX_ADDRESS.getPrefix(), PREFIX_NOTE.getPrefix(), PREFIX_VISIT.getPrefix(),
-                            PREFIX_TAG.getPrefix()),
-                    Set.of(PREFIX_TAG.getPrefix())),
-            EditCommand.COMMAND_WORD, new AutocompletePrefixConfig(true,
-                    List.of(PREFIX_NAME.getPrefix(), PREFIX_PHONE.getPrefix(), PREFIX_EMAIL.getPrefix(),
-                            PREFIX_ADDRESS.getPrefix(), PREFIX_NOTE.getPrefix(), PREFIX_VISIT.getPrefix(),
-                            PREFIX_TAG.getPrefix()),
-                    Set.of(PREFIX_TAG.getPrefix())),
-            FindCommand.COMMAND_WORD, new AutocompletePrefixConfig(false,
-                    List.of(PREFIX_NAME.getPrefix(), PREFIX_TAG.getPrefix(), PREFIX_DATE.getPrefix(),
-                        PREFIX_START_DATE.getPrefix(), PREFIX_END_DATE.getPrefix()),
-                    Set.of()),
-            ListCommand.COMMAND_WORD, new AutocompletePrefixConfig(false,
-                    List.of(PREFIX_SORT.getPrefix()),
-                    Set.of()),
-                ArchiveCommand.COMMAND_WORD, new AutocompletePrefixConfig(true,
-                    List.of(),
-                    Set.of()),
-            NoteCommand.COMMAND_WORD, new AutocompletePrefixConfig(true,
-                    List.of(PREFIX_NOTE.getPrefix()),
-                    Set.of()),
-            TagCommand.COMMAND_WORD, new AutocompletePrefixConfig(true,
-                    List.of(PREFIX_ADD_TAG.getPrefix(), PREFIX_DELETE_TAG.getPrefix()),
-                    Set.of(PREFIX_ADD_TAG.getPrefix(), PREFIX_DELETE_TAG.getPrefix())),
-                UnarchiveCommand.COMMAND_WORD, new AutocompletePrefixConfig(true,
-                    List.of(),
-                    Set.of())
-    );
+    private static final String FIND_NAME_PREFIX = PREFIX_NAME.getPrefix();
+    private static final String FIND_TAG_PREFIX = PREFIX_TAG.getPrefix();
+    private static final String FIND_DATE_PREFIX = PREFIX_DATE.getPrefix();
+    private static final String FIND_START_DATE_PREFIX = PREFIX_START_DATE.getPrefix();
+    private static final String FIND_END_DATE_PREFIX = PREFIX_END_DATE.getPrefix();
+
+    private static final List<String> FIND_PREFIXES = List.of(
+            FIND_NAME_PREFIX, FIND_TAG_PREFIX, FIND_DATE_PREFIX, FIND_START_DATE_PREFIX, FIND_END_DATE_PREFIX);
+
+        private static final List<String> COMMAND_WORDS = createCommandWords();
+
+        private static final Map<String, AutocompletePrefixConfig> AUTOCOMPLETE_PREFIX_CONFIGS = createPrefixConfigs();
 
     private AutocompleteProvider() {}
 
     private record AutocompletePrefixConfig(boolean requiresIndex,
             List<String> prefixes, Set<String> repeatablePrefixes) {}
+
+    private record FindPrefixState(boolean hasName, boolean hasTag, boolean hasDate,
+                                   boolean hasStartDate, boolean hasEndDate) {
+        boolean hasIncompleteDateRangePair() {
+            return hasStartDate ^ hasEndDate;
+        }
+
+        boolean hasCompletedMode() {
+            return hasName || hasTag || hasDate || (hasStartDate && hasEndDate);
+        }
+    }
 
     /**
      * Returns a full completion suggestion for the current user input.
@@ -137,17 +117,14 @@ public final class AutocompleteProvider {
 
     private static Optional<String> suggestCommandCompletion(String input) {
         boolean isExactCommand = COMMAND_WORDS.stream().anyMatch(command -> command.equals(input));
-
         if (isExactCommand) {
             return COMMAND_WORDS.stream()
-                .filter(command -> command.startsWith(input))
-                .filter(command -> !command.equals(input))
-                .findFirst();
+                    .filter(command -> command.startsWith(input))
+                    .filter(command -> !command.equals(input))
+                    .findFirst();
         }
 
-        return COMMAND_WORDS.stream()
-            .filter(command -> command.startsWith(input))
-            .findFirst();
+        return completeCurrentToken(input, input, COMMAND_WORDS, NO_REPEATABLE_PREFIXES, EMPTY_STRING);
     }
 
     private static Optional<String> suggestArgumentCompletion(String input) {
@@ -164,22 +141,16 @@ public final class AutocompleteProvider {
         }
 
         String args = input.substring(firstWhitespaceIndex).stripLeading();
-        String targetArgs = args;
-        if (config.requiresIndex()) {
-            if (!hasIndexToken(args)) {
-                logger.fine("Autocomplete withheld because required index token is missing");
-                return Optional.empty();
-            }
-            targetArgs = removeIndexToken(args);
+        Optional<String> targetArgsOptional = extractTargetArgs(args, config.requiresIndex());
+        if (targetArgsOptional.isEmpty()) {
+            logger.fine("Autocomplete withheld because required index token is missing");
+            return Optional.empty();
         }
 
-        if (targetArgs.isEmpty()) {
-            if (config.prefixes().isEmpty()) {
-                return Optional.empty();
-            }
+        String targetArgs = targetArgsOptional.get();
 
-            String firstPrefix = config.prefixes().get(0);
-            return Optional.of((input.endsWith(" ") ? input : input + " ") + firstPrefix);
+        if (targetArgs.isEmpty()) {
+            return suggestFirstPrefix(input, config.prefixes());
         }
 
         String lastToken = lastToken(targetArgs);
@@ -188,7 +159,7 @@ public final class AutocompleteProvider {
         }
 
         if (lastToken.isEmpty()) {
-            if (!targetArgs.isBlank() && !containsAnyPrefixToken(targetArgs, config.prefixes())) {
+            if (hasInvalidFreeTextArgs(targetArgs, config.prefixes())) {
                 return Optional.empty();
             }
 
@@ -199,76 +170,92 @@ public final class AutocompleteProvider {
             }
 
             Optional<String> repeatablePrefix = nextRepeatablePrefix(config.repeatablePrefixes());
-            if (repeatablePrefix.isPresent()) {
-                return Optional.of(input + repeatablePrefix.get());
-            }
-
-            return Optional.empty();
+            return repeatablePrefix.map(prefix -> input + prefix);
         }
 
-        String filterArgs = targetArgs;
-        Optional<String> firstMatch = config.prefixes().stream()
-                .filter(prefix -> prefix.startsWith(lastToken))
-                .filter(prefix -> !containsPrefixToken(filterArgs, prefix)
-                || config.repeatablePrefixes().contains(prefix))
-            .findFirst();
-
-        if (firstMatch.isEmpty()) {
-            return Optional.empty();
-        }
-
-        String match = firstMatch.get();
-        if (match.equals(lastToken)) {
-            return Optional.empty();
-        }
-
-        return Optional.of(input + match.substring(lastToken.length()));
+        return completeCurrentToken(input, lastToken,
+                config.prefixes(), config.repeatablePrefixes(), targetArgs);
     }
 
     private static Optional<String> suggestFindPrefixCompletion(
             String input, String args, String lastToken, List<String> prefixes) {
-        String namePrefix = PREFIX_NAME.getPrefix();
-        String tagPrefix = PREFIX_TAG.getPrefix();
-        String datePrefix = PREFIX_DATE.getPrefix();
-        String startDatePrefix = PREFIX_START_DATE.getPrefix();
-        String endDatePrefix = PREFIX_END_DATE.getPrefix();
+        FindPrefixState findState = buildFindPrefixState(args);
 
-        boolean hasName = containsPrefixToken(args, namePrefix);
-        boolean hasTag = containsPrefixToken(args, tagPrefix);
-        boolean hasDate = containsPrefixToken(args, datePrefix);
-        boolean hasStartDate = containsPrefixToken(args, startDatePrefix);
-        boolean hasEndDate = containsPrefixToken(args, endDatePrefix);
-
-        // find only allows one mode, except date range mode requires sd/ and ed/ as a pair.
-        if (hasStartDate ^ hasEndDate) {
-            String requiredPairPrefix = hasStartDate ? endDatePrefix : startDatePrefix;
-
-            if (lastToken.isEmpty()) {
-                return Optional.of(input + requiredPairPrefix);
-            }
-
-            if (!containsPrefixToken(args, requiredPairPrefix) && requiredPairPrefix.startsWith(lastToken)) {
-                return Optional.of(input + requiredPairPrefix.substring(lastToken.length()));
-            }
-
-            return Optional.empty();
+        if (findState.hasIncompleteDateRangePair()) {
+            return suggestMissingFindRangePair(input, args, lastToken, findState);
         }
 
-        if (hasName || hasTag || hasDate || (hasStartDate && hasEndDate)) {
+        if (findState.hasCompletedMode()) {
             return Optional.empty();
         }
 
         if (lastToken.isEmpty()) {
-            if (!args.isBlank() && !containsAnyPrefixToken(args, prefixes)) {
+            if (hasInvalidFreeTextArgs(args, prefixes)) {
                 return Optional.empty();
             }
 
-            Optional<String> firstPrefix = prefixes.stream().findFirst();
-            return firstPrefix.map(prefix -> input + prefix);
+            return suggestFirstPrefix(input, prefixes);
         }
 
-        Optional<String> firstMatch = prefixes.stream()
-                .filter(prefix -> prefix.startsWith(lastToken))
+        return completeCurrentToken(input, lastToken, prefixes, NO_REPEATABLE_PREFIXES, EMPTY_STRING);
+    }
+
+    private static FindPrefixState buildFindPrefixState(String args) {
+        return new FindPrefixState(
+                containsPrefixToken(args, FIND_NAME_PREFIX),
+                containsPrefixToken(args, FIND_TAG_PREFIX),
+                containsPrefixToken(args, FIND_DATE_PREFIX),
+                containsPrefixToken(args, FIND_START_DATE_PREFIX),
+                containsPrefixToken(args, FIND_END_DATE_PREFIX)
+        );
+    }
+
+    private static Optional<String> suggestMissingFindRangePair(
+            String input, String args, String lastToken, FindPrefixState findState) {
+        String requiredPairPrefix = findState.hasStartDate() ? FIND_END_DATE_PREFIX : FIND_START_DATE_PREFIX;
+
+        if (lastToken.isEmpty()) {
+            return Optional.of(input + requiredPairPrefix);
+        }
+
+        if (!containsPrefixToken(args, requiredPairPrefix) && requiredPairPrefix.startsWith(lastToken)) {
+            return Optional.of(input + requiredPairPrefix.substring(lastToken.length()));
+        }
+
+        return Optional.empty();
+    }
+
+    private static Optional<String> extractTargetArgs(String args, boolean requiresIndex) {
+        if (!requiresIndex) {
+            return Optional.of(args);
+        }
+
+        if (!hasIndexToken(args)) {
+            return Optional.empty();
+        }
+
+        return Optional.of(removeIndexToken(args));
+    }
+
+    private static Optional<String> suggestFirstPrefix(String input, List<String> prefixes) {
+        if (prefixes.isEmpty()) {
+            return Optional.empty();
+        }
+
+        String firstPrefix = prefixes.get(0);
+        return Optional.of((input.endsWith(SINGLE_SPACE) ? input : input + SINGLE_SPACE) + firstPrefix);
+    }
+
+    private static boolean hasInvalidFreeTextArgs(String args, List<String> prefixes) {
+        return !args.isBlank() && !containsAnyPrefixToken(args, prefixes);
+    }
+
+    private static Optional<String> completeCurrentToken(
+            String input, String currentToken, List<String> candidates,
+            Set<String> repeatablePrefixes, String existingArgs) {
+        Optional<String> firstMatch = candidates.stream()
+                .filter(candidate -> candidate.startsWith(currentToken))
+                .filter(candidate -> isEligibleCandidate(candidate, repeatablePrefixes, existingArgs))
                 .findFirst();
 
         if (firstMatch.isEmpty()) {
@@ -276,11 +263,21 @@ public final class AutocompleteProvider {
         }
 
         String match = firstMatch.get();
-        if (match.equals(lastToken)) {
+        if (match.equals(currentToken)) {
             return Optional.empty();
         }
 
-        return Optional.of(input + match.substring(lastToken.length()));
+        return Optional.of(input + match.substring(currentToken.length()));
+    }
+
+    private static boolean isEligibleCandidate(
+            String candidate, Set<String> repeatablePrefixes, String existingArgs) {
+        if (existingArgs.isEmpty()) {
+            return true;
+        }
+
+        return !containsPrefixToken(existingArgs, candidate)
+                || repeatablePrefixes.contains(candidate);
     }
 
     private static boolean containsAnyPrefixToken(String args, List<String> prefixes) {
@@ -389,5 +386,53 @@ public final class AutocompleteProvider {
         }
 
         return lastWhitespace < 0 ? value : value.substring(lastWhitespace + 1);
+    }
+
+    private static List<String> createCommandWords() {
+    return List.of(
+        AddCommand.COMMAND_WORD,
+        ArchiveCommand.COMMAND_WORD,
+        ClearCommand.COMMAND_WORD,
+        DeleteCommand.COMMAND_WORD,
+        EditCommand.COMMAND_WORD,
+        ExitCommand.COMMAND_WORD,
+        FindCommand.COMMAND_WORD,
+        HelpCommand.COMMAND_WORD,
+        ListCommand.COMMAND_WORD,
+        ListArchiveCommand.COMMAND_WORD,
+        NoteCommand.COMMAND_WORD,
+        TagCommand.COMMAND_WORD,
+        UnarchiveCommand.COMMAND_WORD
+    );
+    }
+
+    private static Map<String, AutocompletePrefixConfig> createPrefixConfigs() {
+    return Map.of(
+        AddCommand.COMMAND_WORD, config(false,
+            List.of(PREFIX_NAME.getPrefix(), PREFIX_PHONE.getPrefix(), PREFIX_EMAIL.getPrefix(),
+                PREFIX_ADDRESS.getPrefix(), PREFIX_NOTE.getPrefix(), PREFIX_VISIT.getPrefix(),
+                PREFIX_TAG.getPrefix()),
+            Set.of(PREFIX_TAG.getPrefix())),
+        EditCommand.COMMAND_WORD, config(true,
+            List.of(PREFIX_NAME.getPrefix(), PREFIX_PHONE.getPrefix(), PREFIX_EMAIL.getPrefix(),
+                PREFIX_ADDRESS.getPrefix(), PREFIX_NOTE.getPrefix(), PREFIX_VISIT.getPrefix(),
+                PREFIX_TAG.getPrefix()),
+            Set.of(PREFIX_TAG.getPrefix())),
+        FindCommand.COMMAND_WORD, config(false, FIND_PREFIXES, NO_REPEATABLE_PREFIXES),
+        ListCommand.COMMAND_WORD, config(false,
+            List.of(PREFIX_SORT.getPrefix()), NO_REPEATABLE_PREFIXES),
+        ArchiveCommand.COMMAND_WORD, config(true, NO_PREFIXES, NO_REPEATABLE_PREFIXES),
+        NoteCommand.COMMAND_WORD, config(true,
+            List.of(PREFIX_NOTE.getPrefix()), NO_REPEATABLE_PREFIXES),
+        TagCommand.COMMAND_WORD, config(true,
+            List.of(PREFIX_ADD_TAG.getPrefix(), PREFIX_DELETE_TAG.getPrefix()),
+            Set.of(PREFIX_ADD_TAG.getPrefix(), PREFIX_DELETE_TAG.getPrefix())),
+        UnarchiveCommand.COMMAND_WORD, config(true, NO_PREFIXES, NO_REPEATABLE_PREFIXES)
+    );
+    }
+
+    private static AutocompletePrefixConfig config(
+        boolean requiresIndex, List<String> prefixes, Set<String> repeatablePrefixes) {
+    return new AutocompletePrefixConfig(requiresIndex, prefixes, repeatablePrefixes);
     }
 }

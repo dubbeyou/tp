@@ -6,15 +6,18 @@ import java.util.List;
 import java.util.Locale;
 
 import seedu.address.logic.commands.AddCommand;
+import seedu.address.logic.commands.ArchiveCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
+import seedu.address.logic.commands.ListArchiveCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.NoteCommand;
 import seedu.address.logic.commands.TagCommand;
+import seedu.address.logic.commands.UnarchiveCommand;
 
 /**
  * Provides render-ready help content for {@link HelpWindow}.
@@ -32,7 +35,10 @@ final class HelpContentProvider {
             new HelpCommandSpec(FindCommand.COMMAND_WORD, FindCommand.MESSAGE_USAGE),
             new HelpCommandSpec(TagCommand.COMMAND_WORD, TagCommand.MESSAGE_USAGE),
             new HelpCommandSpec(NoteCommand.COMMAND_WORD, NoteCommand.MESSAGE_USAGE),
-            new HelpCommandSpec(ClearCommand.COMMAND_WORD, "Usage: " + ClearCommand.COMMAND_WORD),
+            new HelpCommandSpec(ArchiveCommand.COMMAND_WORD, ArchiveCommand.MESSAGE_USAGE),
+            new HelpCommandSpec(UnarchiveCommand.COMMAND_WORD, UnarchiveCommand.MESSAGE_USAGE),
+            new HelpCommandSpec(ListArchiveCommand.COMMAND_WORD, "Usage: " + ListArchiveCommand.COMMAND_WORD),
+            new HelpCommandSpec(ClearCommand.COMMAND_WORD, ClearCommand.MESSAGE_USAGE),
             new HelpCommandSpec(HelpCommand.COMMAND_WORD, "Usage: " + HelpCommand.COMMAND_WORD),
             new HelpCommandSpec(ExitCommand.COMMAND_WORD, "Usage: " + ExitCommand.COMMAND_WORD)
     );
@@ -57,6 +63,24 @@ final class HelpContentProvider {
         int parametersIndex = indexOfIgnoreCase(baseText.usage(), PARAMETERS_SECTION_HEADER);
 
         if (parametersIndex < 0) {
+            int usageIndex = indexOfIgnoreCase(baseText.usage(), "Usage:");
+            if (usageIndex >= 0) {
+                // For simple commands (no Parameters section), keep description and usage separate.
+                String descriptionPrefix = baseText.usage().substring(0, usageIndex).trim();
+                String usageText = baseText.usage().substring(usageIndex).trim();
+                String descriptionText = extractDescription(descriptionPrefix);
+                return new ParsedHelpText(descriptionText, usageText, baseText.examples());
+            }
+
+            int colonIndex = baseText.usage().indexOf(':');
+            if (colonIndex > 0) {
+                // Support compact format: "command: description".
+                String descriptionText = extractDescription(baseText.usage());
+                String commandWord = baseText.usage().substring(0, colonIndex).trim();
+                String usageText = "Usage: " + commandWord;
+                return new ParsedHelpText(descriptionText, usageText, baseText.examples());
+            }
+
             return baseText;
         }
 

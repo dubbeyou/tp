@@ -195,6 +195,20 @@ public class AutocompleteProviderTest {
         assertTrue(AutocompleteProvider.suggestCompletion("add xyz n/John ").isEmpty());
     }
 
+    @Test
+    public void suggestCompletion_addWithMultipleInvalidTokensBeforePrefixes_returnsNoSuggestion() {
+        // EP: multiple invalid tokens before first valid prefix
+        assertTrue(AutocompleteProvider.suggestCompletion("add f invalid g p/").isEmpty());
+        assertTrue(AutocompleteProvider.suggestCompletion("add x y z n/John ").isEmpty());
+    }
+
+    @Test
+    public void suggestCompletion_addWithOnlyWhitespaceBeforePrefixes_suggestsPrefix() {
+        // EP: only whitespace (no invalid tokens) before first prefix
+        assertEquals("add  p/", AutocompleteProvider.suggestCompletion("add  p").orElseThrow());
+        assertEquals("add   n/", AutocompleteProvider.suggestCompletion("add   n").orElseThrow());
+    }
+
     // EP Group: Find Command Modes
 
     @Test
@@ -210,6 +224,15 @@ public class AutocompleteProviderTest {
     public void suggestCompletion_findAllowsOnlyOneModeExceptDateRangePair() {
         // EP: one non-range mode already chosen -> stop suggesting
         assertTrue(AutocompleteProvider.suggestCompletion("find n/Amy ").isEmpty());
+
+        // EP: only name mode chosen (hasName=true, others false, so hasCompletedMode=true)
+        assertTrue(AutocompleteProvider.suggestCompletion("find n/John ").isEmpty());
+
+        // EP: only tag mode chosen (hasTag=true, others false, so hasCompletedMode=true)
+        assertTrue(AutocompleteProvider.suggestCompletion("find t/client ").isEmpty());
+
+        // EP: only date mode chosen (hasDate=true, others false, so hasCompletedMode=true)
+        assertTrue(AutocompleteProvider.suggestCompletion("find d/2026-01-01 ").isEmpty());
 
         // EP: range mode uses required pair -> suggest missing counterpart
         assertEquals("find sd/2026-01-01 ed/",
@@ -232,6 +255,20 @@ public class AutocompleteProviderTest {
         // EP: partial typing of missing pair prefix should autocomplete
         assertEquals("find sd/ ed/", AutocompleteProvider.suggestCompletion("find sd/ e").orElseThrow());
         assertEquals("find ed/ sd/", AutocompleteProvider.suggestCompletion("find ed/ s").orElseThrow());
+    }
+
+    @Test
+    public void suggestCompletion_findRangePrefixPartialAutocompleteMissingPair_suggestsCompletion() {
+        // EP: partial typing of range pair with non-blank last token should autocomplete to complete pair
+        assertEquals("find sd/2026-01-01 ed/", AutocompleteProvider.suggestCompletion("find sd/2026-01-01 e").orElseThrow());
+        assertEquals("find ed/2026-12-31 sd/", AutocompleteProvider.suggestCompletion("find ed/2026-12-31 s").orElseThrow());
+    }
+
+    @Test
+    public void suggestCompletion_findRangePartialTypingNonMatchingToken_noSuggestion() {
+        // EP: partial typing that doesn't match any expected prefix in range context
+        assertTrue(AutocompleteProvider.suggestCompletion("find sd/2026-01-01 x").isEmpty());
+        assertTrue(AutocompleteProvider.suggestCompletion("find ed/2026-12-31 p").isEmpty());
     }
 
     @Test
@@ -258,6 +295,20 @@ public class AutocompleteProviderTest {
         assertTrue(AutocompleteProvider.suggestCompletion("find f n/").isEmpty());
         assertTrue(AutocompleteProvider.suggestCompletion("find invalid n/John ").isEmpty());
         assertTrue(AutocompleteProvider.suggestCompletion("find xyz t/client ").isEmpty());
+    }
+
+    @Test
+    public void suggestCompletion_findWithMultipleInvalidTokensBeforePrefixes_returnsNoSuggestion() {
+        // EP: multiple invalid tokens before first valid prefix
+        assertTrue(AutocompleteProvider.suggestCompletion("find x y z n/").isEmpty());
+        assertTrue(AutocompleteProvider.suggestCompletion("find invalid more stuff t/client ").isEmpty());
+    }
+
+    @Test
+    public void suggestCompletion_findWithOnlyWhitespaceBeforePrefixes_suggestsPrefix() {
+        // EP: only whitespace (no invalid tokens) before first prefix
+        assertEquals("find  n/", AutocompleteProvider.suggestCompletion("find  n").orElseThrow());
+        assertEquals("find   t/", AutocompleteProvider.suggestCompletion("find   t").orElseThrow());
     }
 
     // EP Group: List, Note, Tag, Edit Prefix Behavior
@@ -294,6 +345,13 @@ public class AutocompleteProviderTest {
     }
 
     @Test
+    public void suggestCompletion_listWithOnlyWhitespaceBeforePrefixes_suggestsPrefix() {
+        // EP: only whitespace (no invalid tokens) before first prefix
+        assertEquals("list  s/", AutocompleteProvider.suggestCompletion("list  s").orElseThrow());
+        assertEquals("list   s/", AutocompleteProvider.suggestCompletion("list   s").orElseThrow());
+    }
+
+    @Test
     public void suggestCompletion_edit_requiresIndexBeforePrefixSuggestion() {
         // EP: index-required command blocks prefix suggestions without a valid index
         assertTrue(AutocompleteProvider.suggestCompletion("edit ").isEmpty());
@@ -326,6 +384,20 @@ public class AutocompleteProviderTest {
         assertTrue(AutocompleteProvider.suggestCompletion("edit 1 f p/").isEmpty());
         assertTrue(AutocompleteProvider.suggestCompletion("edit 1 invalid p/123 ").isEmpty());
         assertTrue(AutocompleteProvider.suggestCompletion("edit 1 xyz n/John ").isEmpty());
+    }
+
+    @Test
+    public void suggestCompletion_editWithMultipleInvalidTokensBeforePrefixes_returnsNoSuggestion() {
+        // EP: multiple invalid tokens before first valid prefix  
+        assertTrue(AutocompleteProvider.suggestCompletion("edit 1 x y z p/").isEmpty());
+        assertTrue(AutocompleteProvider.suggestCompletion("edit 1 invalid more stuff n/Bob ").isEmpty());
+    }
+
+    @Test
+    public void suggestCompletion_editWithOnlyWhitespaceBeforePrefixes_suggestsPrefix() {
+        // EP: only whitespace (no invalid tokens) before first prefix
+        assertEquals("edit 1  p/", AutocompleteProvider.suggestCompletion("edit 1  p").orElseThrow());
+        assertEquals("edit 1   n/", AutocompleteProvider.suggestCompletion("edit 1   n").orElseThrow());
     }
 
     @Test
@@ -377,6 +449,13 @@ public class AutocompleteProviderTest {
     }
 
     @Test
+    public void suggestCompletion_noteWithOnlyWhitespaceBeforePrefixes_suggestsPrefix() {
+        // EP: only whitespace (no invalid tokens) before first prefix
+        assertEquals("note 1  nt/", AutocompleteProvider.suggestCompletion("note 1  nt").orElseThrow());
+        assertEquals("note 1   nt/", AutocompleteProvider.suggestCompletion("note 1   nt").orElseThrow());
+    }
+
+    @Test
     public void suggestCompletion_tagWithoutIndex_noSuggestion() {
         // EP: missing required index
         // overlap with suggestCompletion_tag_requiresIndexBeforePrefixSuggestion()
@@ -420,6 +499,13 @@ public class AutocompleteProviderTest {
         assertTrue(AutocompleteProvider.suggestCompletion("tag 1 f at/").isEmpty());
         assertTrue(AutocompleteProvider.suggestCompletion("tag 1 invalid at/client ").isEmpty());
         assertTrue(AutocompleteProvider.suggestCompletion("tag 1 xyz dt/service ").isEmpty());
+    }
+
+    @Test
+    public void suggestCompletion_tagWithOnlyWhitespaceBeforePrefixes_suggestsFirstPrefix() {
+        // EP: only whitespace (no invalid tokens) before first prefix
+        assertEquals("tag 1  at/", AutocompleteProvider.suggestCompletion("tag 1  at").orElseThrow());
+        assertEquals("tag 1   dt/", AutocompleteProvider.suggestCompletion("tag 1   dt").orElseThrow());
     }
 
     // EP Group: Commands Without Prefix Suggestions

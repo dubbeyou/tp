@@ -8,6 +8,16 @@ import org.junit.jupiter.api.Test;
 
 public class EmailTest {
 
+    private static final String VALID_MAX_LENGTH_EMAIL = createEmailWithTotalLength(Email.MAX_LENGTH);
+    private static final String INVALID_OVER_MAX_LENGTH_EMAIL = createEmailWithTotalLength(Email.MAX_LENGTH + 1);
+
+    private static String createEmailWithTotalLength(int totalLength) {
+        // Keep domain fixed and valid while stretching local-part to target length.
+        String domain = "@example.com";
+        int localPartLength = totalLength - domain.length();
+        return "a".repeat(localPartLength) + domain;
+    }
+
     @Test
     public void constructor_null_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new Email(null));
@@ -52,6 +62,9 @@ public class EmailTest {
         assertFalse(Email.isValidEmail("peterjack@example.com-")); // domain name ends with a hyphen
         assertFalse(Email.isValidEmail("peterjack@example.c")); // top level domain has less than two chars
 
+        // Boundary Value Analysis: max length + 1 should be rejected
+        assertFalse(Email.isValidEmail(INVALID_OVER_MAX_LENGTH_EMAIL));
+
         // valid email
         assertTrue(Email.isValidEmail("PeterJack_1190@example.com")); // underscore in local part
         assertTrue(Email.isValidEmail("PeterJack.1190@example.com")); // period in local part
@@ -64,6 +77,9 @@ public class EmailTest {
         assertTrue(Email.isValidEmail("peter_jack@very-very-very-long-example.com")); // long domain name
         assertTrue(Email.isValidEmail("if.you.dream.it_you.can.do.it@example.com")); // long local part
         assertTrue(Email.isValidEmail("e1234567@u.nus.edu")); // more than one period in domain
+
+        // Boundary Value Analysis: exactly max length should be accepted
+        assertTrue(Email.isValidEmail(VALID_MAX_LENGTH_EMAIL));
     }
 
     @Test

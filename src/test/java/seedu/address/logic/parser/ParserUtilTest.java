@@ -31,6 +31,8 @@ public class ParserUtilTest {
     private static final String INVALID_ADDRESS = " ";
     private static final String INVALID_ADDRESS_WITH_SLASH = "12/34 Main Street";
     private static final String INVALID_EMAIL = "example.com";
+    private static final String INVALID_LONG_EMAIL = "a".repeat(Email.MAX_LENGTH - "@example.com".length() + 1)
+            + "@example.com";
     private static final String INVALID_TAG = "#friend";
     private static final String INVALID_VISIT_DATE_TIME = "2026-13-40 25:99";
 
@@ -172,6 +174,7 @@ public class ParserUtilTest {
     @Test
     public void parseEmail_invalidValue_throwsParseException() {
         assertThrows(ParseException.class, () -> ParserUtil.parseEmail(INVALID_EMAIL));
+        assertThrows(ParseException.class, () -> ParserUtil.parseEmail(INVALID_LONG_EMAIL));
     }
 
     @Test

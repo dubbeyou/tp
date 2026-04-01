@@ -98,7 +98,8 @@ public interface Model {
     void updateFilteredPersonList(Predicate<Person> predicate);
 
     /**
-     * Returns current {@code predicate} back for current state refresh.
+     * Returns the predicate currently applied to the filtered person list.
+     * This can be reused to reapply the existing filter without modifying it.
      */
     Predicate<Person> getCurrentPredicate();
 

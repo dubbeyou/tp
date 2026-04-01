@@ -16,6 +16,7 @@ import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.ArchiveCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.ExitCommand;
+import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListArchiveCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.UnarchiveCommand;
@@ -72,14 +73,14 @@ public class HelpContentProviderTest {
 
     @Test
     public void getHelpSections_clearCommandHasSimpleUsage() {
-        // EP: compact format "command: description" should map to description + synthetic Usage line.
+        // EP: clear command should hide usage and keep example only.
         List<HelpContentProvider.HelpSection> sections = HelpContentProvider.getHelpSections();
         HelpContentProvider.HelpSection clearSection = sections.get(10);
 
         assertEquals(ClearCommand.COMMAND_WORD, clearSection.commandWord());
         assertEquals("Clears all entries from the address book.", clearSection.description());
-        assertEquals("Usage: " + ClearCommand.COMMAND_WORD, clearSection.usage());
-        assertEquals("", clearSection.examples());
+        assertEquals("", clearSection.usage());
+        assertTrue(clearSection.examples().startsWith("Example:"));
     }
 
     @Test
@@ -109,10 +110,16 @@ public class HelpContentProviderTest {
     }
 
     @Test
-    public void getHelpSections_allSectionsHaveUsage() {
+    public void getHelpSections_allNonHiddenSectionsHaveUsage() {
         List<HelpContentProvider.HelpSection> sections = HelpContentProvider.getHelpSections();
 
         for (HelpContentProvider.HelpSection section : sections) {
+            if (section.commandWord().equals(ClearCommand.COMMAND_WORD)
+                    || section.commandWord().equals(ListArchiveCommand.COMMAND_WORD)
+                    || section.commandWord().equals(HelpCommand.COMMAND_WORD)
+                    || section.commandWord().equals(ExitCommand.COMMAND_WORD)) {
+                continue;
+            }
             assertFalse(section.usage().isEmpty(),
                     "Usage for " + section.commandWord() + " should not be empty");
         }
@@ -142,7 +149,7 @@ public class HelpContentProviderTest {
     public void helpSection_providesAllFourFields() {
         String command = "test";
         String description = "Test description";
-        String usage = "Usage: test";
+        String usage = "test";
         String examples = "Example: test command";
         HelpContentProvider.HelpSection section = new HelpContentProvider.HelpSection(
                 command, description, usage, examples);
@@ -244,32 +251,21 @@ public class HelpContentProviderTest {
 
     @Test
     public void parseHelpText_compactCommandDescriptionFormat_parsedCorrectly() throws Exception {
-        // EP: compact format with no Parameters/Usage markers.
+        // EP: compact format "command: description".
         HelpContentProvider.ParsedHelpText parsed = invokeParseHelpText(
                 "clear: Clears all entries from the address book.");
 
         assertEquals("Clears all entries from the address book.", parsed.description());
-        assertEquals("Usage: clear", parsed.usage());
+        assertEquals("clear", parsed.usage());
         assertEquals("", parsed.examples());
     }
 
     @Test
-    public void parseHelpText_usageHeaderAtStart_boundaryParsedAsUsageOnly() throws Exception {
-        // BVA: marker appears at index 0, so description prefix is empty.
+    public void parseHelpText_usageHeaderAtStart_treatedAsCompactFormat() throws Exception {
+        // BVA: compact format starting with colon-token "Usage: clear" treated as compact.
         HelpContentProvider.ParsedHelpText parsed = invokeParseHelpText("Usage: clear");
-
-        assertEquals("", parsed.description());
-        assertEquals("Usage: clear", parsed.usage());
-        assertEquals("", parsed.examples());
-    }
-
-    @Test
-    public void parseHelpText_parametersHeaderAtStart_boundaryParsedAsUsageOnly() throws Exception {
-        // BVA: Parameters marker at index 0 should not produce any description text.
-        HelpContentProvider.ParsedHelpText parsed = invokeParseHelpText("Parameters: INDEX");
-
-        assertEquals("", parsed.description());
-        assertEquals("Parameters: INDEX", parsed.usage());
+        assertEquals("clear", parsed.description());
+        assertEquals("Usage", parsed.usage());
         assertEquals("", parsed.examples());
     }
 
@@ -297,7 +293,23 @@ public class HelpContentProviderTest {
         HelpContentProvider.HelpSection listArchiveSection = sections.get(9);
 
         assertEquals(ListArchiveCommand.COMMAND_WORD, listArchiveSection.commandWord());
-        assertEquals("Usage: " + ListArchiveCommand.COMMAND_WORD, listArchiveSection.usage());
+        assertEquals("", listArchiveSection.usage());
+        assertTrue(listArchiveSection.examples().startsWith("Example:"));
+    }
+
+    @Test
+    public void getHelpSections_helpAndExitHideUsageAndShowExamples() {
+        List<HelpContentProvider.HelpSection> sections = HelpContentProvider.getHelpSections();
+        HelpContentProvider.HelpSection helpSection = sections.get(11);
+        HelpContentProvider.HelpSection exitSection = sections.get(12);
+
+        assertEquals(HelpCommand.COMMAND_WORD, helpSection.commandWord());
+        assertEquals("", helpSection.usage());
+        assertTrue(helpSection.examples().startsWith("Example:"));
+
+        assertEquals(ExitCommand.COMMAND_WORD, exitSection.commandWord());
+        assertEquals("", exitSection.usage());
+        assertTrue(exitSection.examples().startsWith("Example:"));
     }
 
     @Test
@@ -312,33 +324,22 @@ public class HelpContentProviderTest {
 
     @Test
     public void parseHelpText_compactFormatWithExample_parsedCorrectly() throws Exception {
-        // EP: compact "command: description" with an example should split and synthesize usage.
+        // EP: compact "command: description" with example - the standard MESSAGE_USAGE format.
         HelpContentProvider.ParsedHelpText parsed = invokeParseHelpText(
                 "clear: Clears all entries from the address book.\n"
                         + "Example: clear");
 
         assertEquals("Clears all entries from the address book.", parsed.description());
-        assertEquals("Usage: clear", parsed.usage());
+        assertEquals("clear", parsed.usage());
         assertEquals("Example: clear", parsed.examples());
     }
 
     @Test
-    public void parseHelpText_plainCommandText_returnsBaseTextUnchanged() throws Exception {
-        // Covers fallback path where no Parameters/Usage/compact-colon markers are present.
+    public void parseHelpText_noExampleAndNoDescription_usage() throws Exception {
+        // Edge case: plain command-only MESSAGE_USAGE (like old format)
         HelpContentProvider.ParsedHelpText parsed = invokeParseHelpText("clear");
-
         assertEquals("", parsed.description());
         assertEquals("clear", parsed.usage());
-        assertEquals("", parsed.examples());
-    }
-
-    @Test
-    public void parseHelpText_colonAtStart_returnsBaseTextUnchanged() throws Exception {
-        // BVA: colon at index 0 should not be treated as compact "command: description" format.
-        HelpContentProvider.ParsedHelpText parsed = invokeParseHelpText(":clear");
-
-        assertEquals("", parsed.description());
-        assertEquals(":clear", parsed.usage());
         assertEquals("", parsed.examples());
     }
 

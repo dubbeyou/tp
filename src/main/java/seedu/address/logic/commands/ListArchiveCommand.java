@@ -14,7 +14,7 @@ public class ListArchiveCommand extends Command {
     public static final String MESSAGE_SUCCESS = "Listed all archived persons";
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Lists all archived persons in the address book.\n"
-            + "Example: " + COMMAND_WORD + "\n";
+            + "Example: " + COMMAND_WORD;
 
     @Override
     public CommandResult execute(Model model) {

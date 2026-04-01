@@ -78,18 +78,24 @@ final class HelpContentProvider {
         int parametersIndex = indexOfIgnoreCase(baseText.usage(), PARAMETERS_SECTION_HEADER);
 
         if (parametersIndex < 0) {
-
-            int colonIndex = baseText.usage().indexOf(COLON);
-            if (colonIndex > ZERO_POSITION) {
-                // Support compact format: "command: description".
-                String descriptionText = extractDescription(baseText.usage());
-                String commandWord = baseText.usage().substring(ZERO_POSITION, colonIndex).trim();
-                return new ParsedHelpText(descriptionText, commandWord, baseText.examples());
-            }
-
-            return baseText;
+            return parseCompactFormat(baseText);
         }
 
+        return parseStandardFormat(baseText, parametersIndex);
+    }
+
+    private static ParsedHelpText parseCompactFormat(ParsedHelpText baseText) {
+        int colonIndex = baseText.usage().indexOf(COLON);
+        if (colonIndex > ZERO_POSITION) {
+            // Support compact format: "command: description".
+            String descriptionText = extractDescription(baseText.usage());
+            String commandWord = baseText.usage().substring(ZERO_POSITION, colonIndex).trim();
+            return new ParsedHelpText(descriptionText, commandWord, baseText.examples());
+        }
+        return baseText;
+    }
+
+    private static ParsedHelpText parseStandardFormat(ParsedHelpText baseText, int parametersIndex) {
         String descriptionPrefix = baseText.usage().substring(ZERO_POSITION, parametersIndex).trim();
         String usageText = baseText.usage().substring(parametersIndex).trim();
         String descriptionText = extractDescription(descriptionPrefix);

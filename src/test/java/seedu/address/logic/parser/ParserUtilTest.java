@@ -28,6 +28,7 @@ public class ParserUtilTest {
     private static final String INVALID_NAME = "R@chel";
     private static final String INVALID_PHONE = "+651234";
     private static final String INVALID_ADDRESS = " ";
+    private static final String INVALID_ADDRESS_WITH_SLASH = "12/34 Main Street";
     private static final String INVALID_EMAIL = "example.com";
     private static final String INVALID_TAG = "#friend";
     private static final String INVALID_VISIT_DATE_TIME = "2026-13-40 25:99";
@@ -45,11 +46,13 @@ public class ParserUtilTest {
 
     @Test
     public void parseIndex_invalidInput_throwsParseException() {
+        // Equivalent Partitioning (invalid): mixed numeric and non-numeric token
         assertThrows(ParseException.class, () -> ParserUtil.parseIndex("10 a"));
     }
 
     @Test
     public void parseIndex_outOfRangeInput_throwsParseException() {
+        // Boundary Value Analysis: Integer.MAX_VALUE + 1 is just beyond supported range
         assertThrows(ParseException.class, MESSAGE_INVALID_INDEX, ()
             -> ParserUtil.parseIndex(Long.toString(Integer.MAX_VALUE + 1)));
     }
@@ -116,17 +119,21 @@ public class ParserUtilTest {
 
     @Test
     public void parseAddress_invalidValue_throwsParseException() {
+        // Equivalent Partitioning (invalid): blank and disallowed character set
         assertThrows(ParseException.class, () -> ParserUtil.parseAddress(INVALID_ADDRESS));
+        assertThrows(ParseException.class, () -> ParserUtil.parseAddress(INVALID_ADDRESS_WITH_SLASH));
     }
 
     @Test
     public void parseAddress_validValueWithoutWhitespace_returnsAddress() throws Exception {
+        // Equivalent Partitioning (valid): standard address format
         Address expectedAddress = new Address(VALID_ADDRESS);
         assertEquals(expectedAddress, ParserUtil.parseAddress(VALID_ADDRESS));
     }
 
     @Test
     public void parseAddress_validValueWithWhitespace_returnsTrimmedAddress() throws Exception {
+        // Equivalent Partitioning (valid): valid address with surrounding whitespace
         String addressWithWhitespace = WHITESPACE + VALID_ADDRESS + WHITESPACE;
         Address expectedAddress = new Address(VALID_ADDRESS);
         assertEquals(expectedAddress, ParserUtil.parseAddress(addressWithWhitespace));

@@ -44,10 +44,10 @@ public class FindCommandParser implements Parser<FindCommand> {
         SearchMode mode = resolveSearchMode(argMultimap);
 
         return switch (mode) {
-            case NAME -> parseNameFind(argMultimap);
-            case TAG -> parseTagFind(argMultimap);
-            case DATE -> parseSingleDateFind(argMultimap);
-            case DATE_RANGE -> parseDateRangeFind(argMultimap);
+        case NAME -> parseNameFind(argMultimap);
+        case TAG -> parseTagFind(argMultimap);
+        case DATE -> parseSingleDateFind(argMultimap);
+        case DATE_RANGE -> parseDateRangeFind(argMultimap);
         };
     }
 

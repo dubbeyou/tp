@@ -178,6 +178,7 @@ Examples:
 **Tip:** Use multiple index and/or ranges for bulk deletion
 </box>
 
+
 Examples:
 * `delete 2` deletes the 2nd person in the address book.
 * `delete 1 3 5` deletes the 1st, 3rd, 5th person in the address book.

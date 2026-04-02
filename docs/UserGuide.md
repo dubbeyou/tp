@@ -111,7 +111,7 @@ Format: `archive INDEX`
 * The index refers to the index number shown in the displayed person list.
 * The index must be a positive integer 1, 2, 3, ... .
 * CareSync will prevent duplicate archiving by displaying an alert if the selected person is already archived.
-* After a successful archive, the displayed list refreshes to show non-archived persons.
+* After a successful archive, the displayed list refreshes to update the currently shown list.
 
 Examples:
 * `archive 1`
@@ -247,7 +247,12 @@ Format: `unarchive INDEX`
 * The index refers to the index number shown in the displayed person list.
 * The index must be a positive integer 1, 2, 3, ... .
 * If the selected person is not archived, CareSync will show a message indicating that the person is not archived.
-* After a successful unarchive, the displayed list refreshes to show non-archived persons. 
+* After a successful unarchive, the displayed list refreshes to update the currently shown list. 
+
+<box type="tip" seamless>
+
+**Tip:** To return to the original list, run `list`.
+</box>
 
 Examples:
 * `list-archive` followed by `unarchive 1` unarchives the 1st person in the archived list.
@@ -320,11 +325,11 @@ Action     | Format, Examples
 -----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 **Add**    | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [nt/NOTE] [v/VISIT_DATE_TIME] [t/TAG]…​` <br> e.g., `add n/James Ho p/82224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 nt/Prefers SMS v/2026-12-01 14:00 t/friend t/colleague`
 **Archive**| `archive INDEX`<br> e.g. `archive 1`
+**Unarchive** | `unarchive INDEX`<br> e.g. `unarchive 1`
 **Clear**  | `clear`
 **Delete** | `delete INDEX [MORE INDEXES or RANGES]`<br> e.g., `delete 1 3 6-9`
 **Edit**   | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [nt/NOTE] [v/VISIT_DATE_TIME] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
 **Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
 **List**   | `list [s/FIELD]`<br> e.g., `list s/name`, `list s/visit`
 **List Archive** | `list-archive`
-**Unarchive** | `unarchive INDEX`<br> e.g. `unarchive 1`
 **Help**   | `help`

@@ -110,7 +110,7 @@ Format: `archive INDEX`
 * Archives the person at the specified INDEX.
 * The index refers to the index number shown in the displayed person list.
 * The index must be a positive integer 1, 2, 3, ... .
-* If the selected person is already archived, CareSync will show a message indicating that the person is already archived.
+* CareSync will prevent duplicate archiving by displaying an alert if the selected person is already archived.
 * After a successful archive, the displayed list refreshes to show non-archived persons.
 
 Examples:

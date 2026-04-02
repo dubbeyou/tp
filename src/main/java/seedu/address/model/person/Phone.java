@@ -11,11 +11,11 @@ public class Phone {
 
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Phone numbers should be an 8-digit local number starting with 6, 8, or 9 (spaces allowed as XXXX XXXX), "
-                    + "a toll-free number in the format 1800 XXX XXXX or 1800XXXXXXX, "
-                    + "or a valid emergency number (995, 999, 1700).";
+            "Phone numbers should be an 8-digit local number starting with 6, 8, or 9 (spaces or hyphens allowed "
+                    + "as XXXX XXXX or XXXX-XXXX), a toll-free number in the format 1800 XXX XXXX, 1800-XXX-XXXX, "
+                    + "or 1800XXXXXXX, or a valid emergency number (995, 999, 1700).";
     public static final String VALIDATION_REGEX =
-            "(?:[689]\\d{7}|[689]\\d{3} \\d{4}|1800 \\d{3} \\d{4}|1800\\d{7}|995|999|1700)";
+            "(?:[689]\\d{7}|[689]\\d{3}[ -]\\d{4}|1800[ -]\\d{3}[ -]\\d{4}|1800\\d{7}|995|999|1700)";
     public final String value;
 
     /**

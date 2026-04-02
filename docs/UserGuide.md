@@ -102,6 +102,21 @@ Examples:
 * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
 * `add n/Betsy Crowe p/61234567 e/betsycrowe@example.com a/Newgate Road #02-01 nt/Prefers email v/2026-12-01 14:00 t/friend t/colleague`
 
+### Archiving a person: `archive`
+Archives a person identified by the index number shown in the current list.
+
+Format: `archive INDEX`
+
+* Archives the person at the specified INDEX.
+* The index refers to the index number shown in the displayed person list.
+* The index must be a positive integer 1, 2, 3, ... .
+* If the selected person is already archived, CareSync will show a message indicating that the person is already archived.
+* After a successful archive, the displayed list refreshes to show non-archived persons.
+
+Examples:
+* `archive 1`
+* `find n/Alex` followed by `archive 1` archives the 1st person in the find results.
+
 ### Listing all persons : `list`
 
 Shows a list of all persons in the address book.  
@@ -272,6 +287,7 @@ _Details coming soon ..._
 Action     | Format, Examples
 -----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 **Add**    | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [nt/NOTE] [v/VISIT_DATE_TIME] [t/TAG]…​` <br> e.g., `add n/James Ho p/82224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 nt/Prefers SMS v/2026-12-01 14:00 t/friend t/colleague`
+**Archive**| `archive INDEX`<br> e.g. `archive 1`
 **Clear**  | `clear`
 **Delete** | `delete INDEX [MORE INDEXES or RANGES]`<br> e.g., `delete 1 3 6-9`
 **Edit**   | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [nt/NOTE] [v/VISIT_DATE_TIME] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`

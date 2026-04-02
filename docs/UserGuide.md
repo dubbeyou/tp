@@ -326,4 +326,5 @@ Action     | Format, Examples
 **Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
 **List**   | `list [s/FIELD]`<br> e.g., `list s/name`, `list s/visit`
 **List Archive** | `list-archive`
+**Unarchive** | `unarchive INDEX`<br> e.g. `unarchive 1`
 **Help**   | `help`

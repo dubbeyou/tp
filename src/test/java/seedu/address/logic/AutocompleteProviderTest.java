@@ -299,6 +299,37 @@ public class AutocompleteProviderTest {
     }
 
     @Test
+    public void suggestCompletion_findWithMixedDateRangeAndName_noSuggestion() {
+        // EP: mixing name mode with incomplete date range should not suggest ed/
+        assertTrue(AutocompleteProvider.suggestCompletion("find n/Alice sd/2026-01-01 ").isEmpty());
+    }
+
+    @Test
+    public void suggestCompletion_findWithMixedDateRangeAndTag_noSuggestion() {
+        // EP: mixing tag mode with incomplete date range should not suggest sd/
+        assertTrue(AutocompleteProvider.suggestCompletion("find t/client ed/2026-12-31 ").isEmpty());
+    }
+
+    @Test
+    public void suggestCompletion_findWithMixedDateRangeAndDate_noSuggestion() {
+        // EP: mixing single date mode with incomplete date range should not suggest ed/
+        assertTrue(AutocompleteProvider.suggestCompletion("find d/2026-06-15 sd/2026-01-01 ").isEmpty());
+    }
+
+    @Test
+    public void suggestCompletion_findWithReversedMixedDateRange_noSuggestion() {
+        // EP: mixing date range with name mode (name entered after date range start)
+        assertTrue(AutocompleteProvider.suggestCompletion("find sd/2026-01-01 n/John ").isEmpty());
+    }
+
+    @Test
+    public void suggestCompletion_findWithPartialModeConflict_noSuggestion() {
+        // EP: partial typing of conflicting mode should still reject suggestion
+        assertTrue(AutocompleteProvider.suggestCompletion("find n/Alice sd/2026-01-01 e").isEmpty());
+        assertTrue(AutocompleteProvider.suggestCompletion("find t/client ed/2026-12-31 s").isEmpty());
+    }
+
+    @Test
     public void suggestCompletion_findWithInvalidTokenBeforeValidPrefix_returnsNoSuggestion() {
         // EP: invalid non-prefix token appearing before first valid prefix
         assertTrue(AutocompleteProvider.suggestCompletion("find f n/").isEmpty());

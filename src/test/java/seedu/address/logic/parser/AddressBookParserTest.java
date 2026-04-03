@@ -81,8 +81,7 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_listarchive() throws Exception {
         assertTrue(parser.parseCommand(ListArchiveCommand.COMMAND_WORD) instanceof ListArchiveCommand);
-        assertThrows(ParseException.class, () ->
-                parser.parseCommand(ListArchiveCommand.COMMAND_WORD + " 3"));
+        assertTrue(parser.parseCommand(ListArchiveCommand.COMMAND_WORD + " 3") instanceof ListArchiveCommand);
     }
 
     @Test
@@ -155,7 +154,9 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_list() throws Exception {
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD) instanceof ListCommand);
-        assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD + " 3") instanceof ListCommand);
+        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_USAGE), ()
+                -> parser.parseCommand(ListCommand.COMMAND_WORD + " 3"));
+        assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD + " s/name") instanceof ListCommand);
     }
 
     @Test

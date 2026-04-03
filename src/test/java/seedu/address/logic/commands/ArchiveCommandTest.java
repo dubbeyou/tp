@@ -75,7 +75,7 @@ public class ArchiveCommandTest {
         Model expectedModel = getExpectedModelCopy();
         Person expectedPersonToArchive = expectedModel.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         expectedModel.archivePerson(expectedPersonToArchive);
-        expectedModel.updateFilteredPersonList(p -> !p.isArchived());
+        expectedModel.updateFilteredPersonList(model.getCurrentPredicate());
 
         assertCommandSuccess(archiveCommand, model, expectedMessage, expectedModel);
     }

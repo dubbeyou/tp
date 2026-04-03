@@ -19,6 +19,8 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
+import seedu.address.model.person.Person;
+import seedu.address.testutil.PersonBuilder;
 
 /**
  * Contains integration tests (interaction with the Model) for {@code FindCommand}.
@@ -59,7 +61,7 @@ public class FindCommandTest {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0);
         NameContainsKeywordsPredicate predicate = preparePredicate(" ");
         FindCommand command = new FindCommand(predicate);
-        expectedModel.updateFilteredPersonList(predicate);
+        expectedModel.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS.and(predicate));
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
         assertEquals(Collections.emptyList(), model.getFilteredPersonList());
     }
@@ -69,9 +71,36 @@ public class FindCommandTest {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 3);
         NameContainsKeywordsPredicate predicate = preparePredicate("Kurz Elle Kunz");
         FindCommand command = new FindCommand(predicate);
-        expectedModel.updateFilteredPersonList(predicate);
+        expectedModel.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS.and(predicate));
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
         assertEquals(Arrays.asList(CARL, ELLE, FIONA), model.getFilteredPersonList());
+    }
+
+    @Test
+    public void execute_matchingArchivedPerson_excludedFromResults() {
+        Person carlInModel = model.getFilteredPersonList().stream()
+                .filter(p -> p.getName().fullName.equals("Carl Kurz"))
+                .findFirst()
+                .orElseThrow();
+        Person archivedCarlInModel = new PersonBuilder(carlInModel).withArchived(true).build();
+        model.setPerson(carlInModel, archivedCarlInModel);
+
+        Person carlInExpected = expectedModel.getFilteredPersonList().stream()
+                .filter(p -> p.getName().fullName.equals("Carl Kurz"))
+                .findFirst()
+                .orElseThrow();
+        Person archivedCarlInExpected = new PersonBuilder(carlInExpected).withArchived(true).build();
+        expectedModel.setPerson(carlInExpected, archivedCarlInExpected);
+
+        NameContainsKeywordsPredicate predicate = preparePredicate("Kurz");
+        FindCommand command = new FindCommand(predicate);
+
+        expectedModel.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS.and(predicate));
+
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0);
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertFalse(model.getFilteredPersonList().stream()
+                .anyMatch(p -> p.getName().fullName.equals("Carl Kurz")));
     }
 
     @Test
@@ -81,6 +110,8 @@ public class FindCommandTest {
         String expected = FindCommand.class.getCanonicalName() + "{predicate=" + predicate + "}";
         assertEquals(expected, findCommand.toString());
     }
+
+
 
     /**
      * Parses {@code userInput} into a {@code NameContainsKeywordsPredicate}.

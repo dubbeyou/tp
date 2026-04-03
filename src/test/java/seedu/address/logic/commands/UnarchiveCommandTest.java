@@ -50,7 +50,7 @@ public class UnarchiveCommandTest {
         expectedModel.updateFilteredPersonList(Person::isArchived);
         Person expectedPerson = expectedModel.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         expectedModel.unarchivePerson(expectedPerson);
-        expectedModel.updateFilteredPersonList(p -> !p.isArchived());
+        expectedModel.updateFilteredPersonList(Person::isArchived);
 
         assertCommandSuccess(unarchiveCommand, model, expectedMessage, expectedModel);
     }
@@ -74,10 +74,10 @@ public class UnarchiveCommandTest {
         expectedModel.updateFilteredPersonList(Person::isArchived);
         Person expectedPerson = expectedModel.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         expectedModel.unarchivePerson(expectedPerson);
-        expectedModel.updateFilteredPersonList(p -> !p.isArchived());
+        expectedModel.updateFilteredPersonList(Person::isArchived);
 
         assertCommandSuccess(unarchiveCommand, model, expectedMessage, expectedModel);
-        assertFalse(model.getFilteredPersonList().stream().anyMatch(Person::isArchived));
+        assertFalse(model.getFilteredPersonList().stream().anyMatch(p -> !p.isArchived()));
     }
 
     @Test

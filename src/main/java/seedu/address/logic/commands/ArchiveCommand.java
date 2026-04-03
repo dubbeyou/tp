@@ -60,7 +60,7 @@ public class ArchiveCommand extends Command {
 
         logger.info("Successfully archived person: " + personToArchive);
 
-        model.updateFilteredPersonList(p -> !p.isArchived());
+        model.updateFilteredPersonList(model.getCurrentPredicate());
         return new CommandResult(String.format(MESSAGE_ARCHIVE_PERSON_SUCCESS, Messages.format(personToArchive)));
     }
 

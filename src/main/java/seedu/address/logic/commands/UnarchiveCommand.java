@@ -59,8 +59,8 @@ public class UnarchiveCommand extends Command {
 
         logger.info("Successfully unarchived person: " + personToUnarchive);
 
-        // Refresh view to show only active persons again
-        model.updateFilteredPersonList(p -> !p.isArchived());
+        // Refresh on current active list
+        model.updateFilteredPersonList(model.getCurrentPredicate());
 
         return new CommandResult(
                 String.format(MESSAGE_UNARCHIVE_PERSON_SUCCESS,

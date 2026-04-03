@@ -25,6 +25,7 @@ public class ModelManager implements Model {
     private final UserPrefs userPrefs;
     private final FilteredList<Person> filteredPersons;
     private final SortedList<Person> sortedPersons;
+    private Predicate<Person> currentPredicate;
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
@@ -38,6 +39,7 @@ public class ModelManager implements Model {
         this.userPrefs = new UserPrefs(userPrefs);
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList(), p -> !p.isArchived());
         sortedPersons = new SortedList<>(filteredPersons);
+        this.currentPredicate = PREDICATE_SHOW_ALL_PERSONS;
     }
 
     public ModelManager() {
@@ -117,7 +119,7 @@ public class ModelManager implements Model {
     @Override
     public void addPerson(Person person) {
         addressBook.addPerson(person);
-        updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+        updateFilteredPersonList(this.currentPredicate);
     }
 
     @Override
@@ -141,7 +143,9 @@ public class ModelManager implements Model {
     @Override
     public void updateFilteredPersonList(Predicate<Person> predicate) {
         requireNonNull(predicate);
-        filteredPersons.setPredicate(predicate);
+        this.currentPredicate = predicate;
+        filteredPersons.setPredicate(p -> false); // Force clear first
+        filteredPersons.setPredicate(predicate); // Then apply actual predicate
     }
 
     @Override
@@ -183,6 +187,11 @@ public class ModelManager implements Model {
             return;
         }
         sortedPersons.setComparator(comparator);
+    }
+
+    @Override
+    public Predicate<Person> getCurrentPredicate() {
+        return this.currentPredicate;
     }
 
     @Override

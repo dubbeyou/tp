@@ -12,6 +12,7 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Note;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.VisitDateTime;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -20,24 +21,130 @@ import seedu.address.model.tag.Tag;
 public class SampleDataUtil {
     public static Person[] getSamplePersons() {
         return new Person[] {
-            new Person(new Name("Alex Yeoh"), new Phone("87438807"), new Email("alexyeoh@example.com"),
-                new Address("Blk 30 Geylang Street 29, #06-40"), new Note(""),
-                getTagSet("friends")),
-            new Person(new Name("Bernice Yu"), new Phone("99272758"), new Email("berniceyu@example.com"),
-                new Address("Blk 30 Lorong 3 Serangoon Gardens, #07-18"), new Note(""),
-                getTagSet("colleagues", "friends")),
-            new Person(new Name("Charlotte Oliveiro"), new Phone("93210283"), new Email("charlotte@example.com"),
-                new Address("Blk 11 Ang Mo Kio Street 74, #11-04"), new Note(""),
-                getTagSet("neighbours")),
-            new Person(new Name("David Li"), new Phone("91031282"), new Email("lidavid@example.com"),
-                new Address("Blk 436 Serangoon Gardens Street 26, #16-43"), new Note(""),
-                getTagSet("family")),
-            new Person(new Name("Irfan Ibrahim"), new Phone("92492021"), new Email("irfan@example.com"),
-                new Address("Blk 47 Tampines Street 20, #17-35"), new Note(""),
-                getTagSet("classmates")),
-            new Person(new Name("Roy Balakrishnan"), new Phone("92624417"), new Email("royb@example.com"),
-                new Address("Blk 45 Aljunied Street 85, #11-31"), new Note(""),
-                getTagSet("colleagues"))
+            new Person(
+                    new Name("Tan Ah Seng"),
+                    new Phone("91234567"),
+                    new Email("ahseng@example.com"),
+                    new Address("Blk 123 Ang Mo Kio Ave 3, #04-56"),
+                    new Note("Elderly client. Needs weekly visits."),
+                    getTagSet("caseid1", "client"),
+                    new VisitDateTime("2026-04-12 10:30"),
+                    false
+            ),
+            new Person(
+                    new Name("Tan Mei Ling"),
+                    new Phone("92345678"),
+                    new Email("meiling@example.com"),
+                    new Address("Blk 123 Ang Mo Kio Ave 3, #04-56"),
+                    new Note(""),
+                    getTagSet("caseid1", "caregiver", "family"),
+                    new VisitDateTime(),
+                    false
+            ),
+            new Person(
+                    new Name("Ng Jun Kai"),
+                    new Phone("93456789"),
+                    new Email("junkai@example.com"),
+                    new Address("Blk 78 Bedok North Street 4, #08-12"),
+                    new Note("Youth client receiving financial assistance."),
+                    getTagSet("caseid2", "client"),
+                    new VisitDateTime("2026-04-13 09:00"),
+                    false
+            ),
+            new Person(
+                    new Name("Ng Li Wei"),
+                    new Phone("94567890"),
+                    new Email("liwei@example.com"),
+                    new Address("Blk 78 Bedok North Street 4, #08-12"),
+                    new Note("Mother and caregiver."),
+                    getTagSet("caseid2", "caregiver", "family"),
+                    new VisitDateTime(),
+                    false
+            ),
+            new Person(
+                    new Name("Bright Future School"),
+                    new Phone("65556666"),
+                    new Email("contact@bfschool.edu.sg"),
+                    new Address("21 Jurong West Street 65"),
+                    new Note("School contact for attendance monitoring."),
+                    getTagSet("caseid2", "school"),
+                    new VisitDateTime(),
+                    false
+            ),
+            new Person(
+                    new Name("Lim Siew Lan"),
+                    new Phone("95678901"),
+                    new Email("siewlan@example.com"),
+                    new Address("Blk 45 Toa Payoh Lorong 5, #10-22"),
+                    new Note("Client requiring medical follow-ups."),
+                    getTagSet("caseid3", "client"),
+                    new VisitDateTime("2026-04-15 14:00"),
+                    false
+            ),
+            new Person(
+                    new Name("Tan Kok Beng"),
+                    new Phone("96789012"),
+                    new Email("kokbeng@example.com"),
+                    new Address("Blk 45 Toa Payoh Lorong 5, #10-22"),
+                    new Note("Husband and caregiver."),
+                    getTagSet("caseid3", "caregiver", "family"),
+                    new VisitDateTime(),
+                    false
+            ),
+            new Person(
+                    new Name("SGH Medical Social Worker"),
+                    new Phone("62223333"),
+                    new Email("msw@sgh.com.sg"),
+                    new Address("Outram Road"),
+                    new Note("Hospital liaison for discharge planning."),
+                    getTagSet("caseid3", "hospital"),
+                    new VisitDateTime(),
+                    false
+            ),
+
+            // ===== CASE 4 (ARCHIVED = true) =====
+            new Person(
+                    new Name("Rahim Bakar"),
+                    new Phone("97890123"),
+                    new Email("rahim@example.com"),
+                    new Address("Blk 210 Jurong East Street 21, #02-11"),
+                    new Note("Client awaiting housing relocation."),
+                    getTagSet("caseid4", "client"),
+                    new VisitDateTime("2026-04-20 11:00"),
+                    true
+            ),
+            new Person(
+                    new Name("HDB Officer Tan"),
+                    new Phone("61234567"),
+                    new Email("hdb@hdb.gov.sg"),
+                    new Address("HDB Hub, Toa Payoh"),
+                    new Note("Housing officer handling case."),
+                    getTagSet("caseid4", "agency"),
+                    new VisitDateTime(),
+                    true
+            ),
+
+            // ===== CASE 5 =====
+            new Person(
+                    new Name("Siti Aisyah"),
+                    new Phone("98901234"),
+                    new Email("aisyah@example.com"),
+                    new Address("Blk 55 Choa Chu Kang, #06-78"),
+                    new Note("Single mother requiring support."),
+                    getTagSet("caseid5", "client"),
+                    new VisitDateTime("2026-04-18 16:00"),
+                    false
+            ),
+            new Person(
+                    new Name("Helping Hands Volunteer Group"),
+                    new Phone("97778888"),
+                    new Email("helpinghands@volunteer.org"),
+                    new Address("10 Bukit Merah Central"),
+                    new Note("Volunteer group assisting with visits."),
+                    getTagSet("caseid5", "volunteer"),
+                    new VisitDateTime(),
+                    false
+            )
         };
     }
 

@@ -17,7 +17,7 @@ public class Messages {
     public static final String MESSAGE_INVALID_PERSON_DISPLAYED_INDEX = "The person index provided is invalid";
     public static final String MESSAGE_PERSONS_LISTED_OVERVIEW = "%1$d persons listed!";
     public static final String MESSAGE_DUPLICATE_FIELDS =
-                "Multiple values specified for the following single-valued field(s): ";
+            "Multiple values provided for the same field. Each field should only be specified once: ";
     public static final String MESSAGE_INVALID_INDEX =
             "Invalid index. Index must be a non-zero positive number (1, 2, 3...).";
     public static final String MESSAGE_INDEX_TOO_LARGE =

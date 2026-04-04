@@ -167,26 +167,33 @@ public class ModelManager implements Model {
     @Override
     public void sortFilteredPersonList(String field) {
 
+        // Reset to original order first
+        sortedPersons.setComparator(null);
+
         Comparator<Person> comparator;
 
         switch (field) {
         case "name":
-            comparator = Comparator.comparing(p -> p.getName().fullName.toLowerCase());
+            comparator = getNameComparator();
             break;
 
         case "visit":
-            comparator = Comparator.comparing(
-                    p -> p.getVisitDateTime().isPresent()
-                            ? p.getVisitDateTime().getValue()
-                            : null,
-                    Comparator.nullsLast(Comparator.naturalOrder())
-            );
+            comparator = getVisitComparator();
             break;
 
         default:
             return;
         }
+
         sortedPersons.setComparator(comparator);
+    }
+
+    private Comparator<Person> getNameComparator() {
+        return Person::compareByName;
+    }
+
+    private Comparator<Person> getVisitComparator() {
+        return Person::compareByVisitThenName;
     }
 
     @Override

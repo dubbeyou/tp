@@ -19,7 +19,7 @@ import seedu.address.model.person.Person;
 public class ArchiveCommand extends Command {
 
     public static final String COMMAND_WORD = "archive";
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Archives the person identified by the index number. "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Archives the person identified by the index number.\n"
             + "Parameters: INDEX (must be a positive integer)\n"
             + "Example: " + COMMAND_WORD + " 1";
     public static final String MESSAGE_ARCHIVE_PERSON_SUCCESS = "Archived: %1$s";

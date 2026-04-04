@@ -25,6 +25,8 @@ public class ListCommandParser implements Parser<ListCommand> {
         ArgumentMultimap argMultimap =
                 ArgumentTokenizer.tokenize(args, PREFIX_SORT);
 
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_SORT);
+
         String sortField = argMultimap.getValue(PREFIX_SORT)
                 .map(String::trim)
                 .map(String::toLowerCase)

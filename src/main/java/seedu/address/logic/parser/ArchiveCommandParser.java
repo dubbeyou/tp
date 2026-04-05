@@ -17,13 +17,12 @@ public class ArchiveCommandParser implements Parser<ArchiveCommand> {
      * @throws ParseException if the user input does not conform the expected format
      */
     public ArchiveCommand parse(String args) throws ParseException {
-        try {
-            Index index = ParserUtil.parseIndex(args);
-            return new ArchiveCommand(index);
-        } catch (ParseException pe) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, ArchiveCommand.MESSAGE_USAGE), pe);
-        }
+        Index index = ParserUtil.parseSingleIndexOrThrow(
+                args,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, ArchiveCommand.MESSAGE_USAGE)
+        );
+
+        return new ArchiveCommand(index);
     }
 
 }

@@ -9,6 +9,7 @@ import static seedu.address.testutil.Assert.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.SortField;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
@@ -20,14 +21,14 @@ public class ListCommandParserTest {
     public void parse_noSort_success() {
         assertParseSuccess(parser,
                 "",
-                new ListCommand(""));
+                new ListCommand(null));
     }
 
     @Test
     public void parse_validSortName_success() {
         assertParseSuccess(parser,
                 " " + PREFIX_SORT + "name",
-                new ListCommand("name"));
+                new ListCommand(SortField.NAME));
     }
 
     @Test
@@ -41,21 +42,21 @@ public class ListCommandParserTest {
     public void parse_caseInsensitiveSort_success() {
         assertParseSuccess(parser,
                 " " + PREFIX_SORT + "Name",
-                new ListCommand("name"));
+                new ListCommand(SortField.NAME));
     }
 
     @Test
     public void parse_validSortVisit_success() {
         assertParseSuccess(parser,
                 " " + PREFIX_SORT + "visit",
-                new ListCommand("visit"));
+                new ListCommand(SortField.VISIT));
     }
 
     @Test
     public void parse_caseInsensitiveSortVisit_success() {
         assertParseSuccess(parser,
                 " " + PREFIX_SORT + "Visit",
-                new ListCommand("visit"));
+                new ListCommand(SortField.VISIT));
     }
 
     @Test
@@ -87,7 +88,7 @@ public class ListCommandParserTest {
 
         ListCommand command = parser.parse("   ");
 
-        assertEquals(new ListCommand(""), command);
+        assertEquals(new ListCommand(null), command);
     }
 
     @Test

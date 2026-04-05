@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SORT;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
+import seedu.address.logic.SortField;
 import seedu.address.model.Model;
 
 /**
@@ -25,13 +26,13 @@ public class ListCommand extends Command {
             + "Example: " + COMMAND_WORD + " " + PREFIX_SORT + "name\n"
             + "Example: " + COMMAND_WORD + " " + PREFIX_SORT + "visit";
 
-    private final String sortField;
+    private final SortField sortField;
 
     public ListCommand() {
-        this("");
+        this(null);
     }
 
-    public ListCommand(String sortField) {
+    public ListCommand(SortField sortField) {
         this.sortField = sortField;
     }
 
@@ -39,15 +40,18 @@ public class ListCommand extends Command {
     public CommandResult execute(Model model) {
         requireNonNull(model);
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
-        if (!sortField.isEmpty()) {
-            model.sortFilteredPersonList(sortField);
-            return new CommandResult(String.format(MESSAGE_SORT_SUCCESS, sortField));
 
+        if (sortField != null) {
+            model.sortFilteredPersonList(sortField);
+            return new CommandResult(
+                    String.format(MESSAGE_SORT_SUCCESS, sortField.name().toLowerCase())
+            );
         } else {
             model.resetSort();
             return new CommandResult(MESSAGE_SUCCESS);
         }
     }
+
     @Override
     public boolean equals(Object other) {
         if (other == this) {
@@ -58,7 +62,7 @@ public class ListCommand extends Command {
             return false;
         }
 
-        return sortField.equals(otherCommand.sortField);
+        return sortField == otherCommand.sortField;
     }
 }
 

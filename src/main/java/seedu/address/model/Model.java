@@ -5,6 +5,7 @@ import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.logic.SortField;
 import seedu.address.model.person.Person;
 
 /**
@@ -107,7 +108,7 @@ public interface Model {
      * Sorts the filtered person list by the specified {@code field}.
      * The ordering of the current filtered view will be updated accordingly.
      */
-    default void sortFilteredPersonList(String field){}
+    default void sortFilteredPersonList(SortField field){}
 
     /**
      * Resets the sorting of the filtered person list.

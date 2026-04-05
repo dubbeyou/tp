@@ -8,6 +8,7 @@ import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.SortField;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
@@ -39,9 +40,9 @@ public class ListCommandTest {
 
     @Test
     public void execute_listSortedByName_success() {
-        ListCommand command = new ListCommand("name");
+        ListCommand command = new ListCommand(SortField.NAME);
 
-        expectedModel.sortFilteredPersonList("name");
+        expectedModel.sortFilteredPersonList(SortField.NAME);
 
         assertCommandSuccess(command, model,
                 String.format(ListCommand.MESSAGE_SORT_SUCCESS, "name"),
@@ -50,12 +51,25 @@ public class ListCommandTest {
 
     @Test
     public void execute_listSortedByVisit_success() {
-        ListCommand command = new ListCommand("visit");
+        ListCommand command = new ListCommand(SortField.VISIT);
 
-        expectedModel.sortFilteredPersonList("visit");
+        expectedModel.sortFilteredPersonList(SortField.VISIT);
 
         assertCommandSuccess(command, model,
                 String.format(ListCommand.MESSAGE_SORT_SUCCESS, "visit"),
+                expectedModel);
+    }
+
+    @Test
+    public void execute_noSort_resetsSort() {
+        model.sortFilteredPersonList(SortField.NAME);
+
+        ListCommand command = new ListCommand(null);
+
+        expectedModel.resetSort();
+
+        assertCommandSuccess(command, model,
+                ListCommand.MESSAGE_SUCCESS,
                 expectedModel);
     }
 

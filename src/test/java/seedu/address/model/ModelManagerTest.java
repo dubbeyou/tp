@@ -15,6 +15,7 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.logic.SortField;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
 import seedu.address.testutil.AddressBookBuilder;
@@ -141,7 +142,7 @@ public class ModelManagerTest {
 
         ModelManager model = new ModelManager(addressBook, new UserPrefs());
 
-        model.sortFilteredPersonList("name");
+        model.sortFilteredPersonList(SortField.NAME);
 
         assertEquals(ALICE, model.getFilteredPersonList().get(0));
         assertEquals(BENSON, model.getFilteredPersonList().get(1));
@@ -156,7 +157,7 @@ public class ModelManagerTest {
 
         ModelManager model = new ModelManager(addressBook, new UserPrefs());
 
-        model.sortFilteredPersonList("name");
+        model.sortFilteredPersonList(SortField.NAME);
         model.resetSort();
 
         assertEquals(BENSON, model.getFilteredPersonList().get(0));
@@ -185,7 +186,7 @@ public class ModelManagerTest {
 
         ModelManager model = new ModelManager(addressBook, new UserPrefs());
 
-        model.sortFilteredPersonList("visit");
+        model.sortFilteredPersonList(SortField.VISIT);
 
         assertEquals(personWithEarlierVisit, model.getFilteredPersonList().get(0));
         assertEquals(personWithLaterVisit, model.getFilteredPersonList().get(1));

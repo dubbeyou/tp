@@ -13,6 +13,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
+import seedu.address.logic.SortField;
 import seedu.address.model.person.Person;
 
 /**
@@ -165,7 +166,7 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public void sortFilteredPersonList(String field) {
+    public void sortFilteredPersonList(SortField field) {
 
         // Reset to original order first
         sortedPersons.setComparator(null);
@@ -173,11 +174,11 @@ public class ModelManager implements Model {
         Comparator<Person> comparator;
 
         switch (field) {
-        case "name":
+        case NAME:
             comparator = getNameComparator();
             break;
 
-        case "visit":
+        case VISIT:
             comparator = getVisitComparator();
             break;
 

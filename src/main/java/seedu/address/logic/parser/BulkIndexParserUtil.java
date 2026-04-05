@@ -1,10 +1,11 @@
 package seedu.address.logic.parser;
 
-import static seedu.address.logic.Messages.MESSAGE_EMPTY_INPUT;
 import static seedu.address.logic.Messages.MESSAGE_INDEX_TOO_LARGE;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_INDEX;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_RANGE;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_TOKEN;
+import static seedu.address.logic.Messages.MESSAGE_RANGE_INDEX_LARGE;
 import static seedu.address.logic.Messages.MESSAGE_RANGE_TOO_LARGE;
 
 import java.util.ArrayList;
@@ -30,11 +31,13 @@ public final class BulkIndexParserUtil {
      * Parses a string of indices and ranges into a list of {@code Index}.
      *
      * @param args user input arguments containing indices and/or ranges
+     * @param usageMessage the usage message used for format-related errors
      * @return an unmodifiable list of unique {@code Index} objects sorted in ascending order
-     * @throws ParseException if the input is empty or contains invalid tokens, ranges, or indices
+     * @throws ParseException if the input is empty or contains invalid tokens (format errors),
+     *                        or contains invalid indices or ranges
      */
-    public static List<Index> parseBulkIndexes(String args) throws ParseException {
-        String[] tokens = tokenizeOrThrow(args);
+    public static List<Index> parseBulkIndexes(String args, String usageMessage) throws ParseException {
+        String[] tokens = tokenizeOrThrow(args, usageMessage);
         Set<Integer> indexSet = collectOneBasedIndexes(tokens);
         return toSortedUnmodifiableIndexList(indexSet);
     }
@@ -46,9 +49,9 @@ public final class BulkIndexParserUtil {
      * @return array of tokens split by whitespace
      * @throws ParseException if the input is null or empty
      */
-    private static String[] tokenizeOrThrow(String args) throws ParseException {
+    private static String[] tokenizeOrThrow(String args, String usageMessage) throws ParseException {
         if (args == null || args.trim().isEmpty()) {
-            throw new ParseException(MESSAGE_EMPTY_INPUT);
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, usageMessage));
         }
         return args.trim().split("\\s+");
     }
@@ -140,7 +143,7 @@ public final class BulkIndexParserUtil {
             end = Integer.parseInt(parts[1]);
         } catch (NumberFormatException e) {
             // Only possible case now = overflow
-            throw new ParseException(MESSAGE_RANGE_TOO_LARGE);
+            throw new ParseException(MESSAGE_RANGE_INDEX_LARGE);
         }
 
         if (start <= 0 || end <= 0) {

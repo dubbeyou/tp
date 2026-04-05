@@ -8,6 +8,9 @@ import org.junit.jupiter.api.Test;
 
 public class AddressTest {
 
+    private static final String VALID_MAX_LENGTH_ADDRESS = "A".repeat(Address.MAX_LENGTH);
+    private static final String INVALID_OVER_MAX_LENGTH_ADDRESS = "A".repeat(Address.MAX_LENGTH + 1);
+
     @Test
     public void constructor_null_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new Address(null));
@@ -24,14 +27,21 @@ public class AddressTest {
         // null address
         assertThrows(NullPointerException.class, () -> Address.isValidAddress(null));
 
-        // invalid addresses
+        // Equivalent Partitioning (invalid): blank, whitespace-only, disallowed character sets
         assertFalse(Address.isValidAddress("")); // empty string
         assertFalse(Address.isValidAddress(" ")); // spaces only
+        assertFalse(Address.isValidAddress("12/34 Main St")); // slash is not allowed
 
-        // valid addresses
+        // Boundary Value Analysis: max length + 1 should be rejected
+        assertFalse(Address.isValidAddress(INVALID_OVER_MAX_LENGTH_ADDRESS)); // exceeds max length
+
+        // Equivalent Partitioning (valid): common real-world address formats
         assertTrue(Address.isValidAddress("Blk 456, Den Road, #01-355"));
-        assertTrue(Address.isValidAddress("-")); // one character
-        assertTrue(Address.isValidAddress("Leng Inc; 1234 Market St; San Francisco CA 2349879; USA")); // long address
+        assertTrue(Address.isValidAddress("Leng Inc, 1234 Market St, San Francisco CA 2349879")); // long address
+        assertTrue(Address.isValidAddress("One George Street (Tower A), #15-01"));
+
+        // Boundary Value Analysis: exactly max length should be accepted
+        assertTrue(Address.isValidAddress(VALID_MAX_LENGTH_ADDRESS));
     }
 
     @Test

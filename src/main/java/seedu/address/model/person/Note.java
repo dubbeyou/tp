@@ -7,13 +7,17 @@ import static java.util.Objects.requireNonNull;
  */
 public class Note {
 
-    public static final String MESSAGE_CONSTRAINTS = "Notes should be up to 150 characters "
+    public static final int MAX_LENGTH = 150;
+
+    public static final String MESSAGE_CONSTRAINTS = "Notes should be up to " + MAX_LENGTH + " characters "
         + "and contain only alphanumeric characters, spaces, commas, and full stops";
 
     /*
-     * Allows up to 150 characters consisting of letters, numbers, spaces, commas, and full stops.
+     * Regex breakdown:
+     * - ^ and $            : match the whole note string
+     * - [a-zA-Z0-9,. ]*    : zero or more letters, digits, commas, periods, or spaces
      */
-    public static final String VALIDATION_REGEX = "^[a-zA-Z0-9,. ]{0,150}$";
+    public static final String VALIDATION_REGEX = "^[a-zA-Z0-9,. ]*$";
     public final String value;
 
     /**
@@ -30,7 +34,7 @@ public class Note {
      * Returns true if a given string is a valid note.
      */
     public static boolean isValidNote(String test) {
-        return test.matches(VALIDATION_REGEX);
+        return test.length() <= MAX_LENGTH && test.matches(VALIDATION_REGEX);
     }
 
     /**

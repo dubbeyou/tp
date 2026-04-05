@@ -8,6 +8,9 @@ import org.junit.jupiter.api.Test;
 
 public class NameTest {
 
+    private static final String VALID_MAX_LENGTH_NAME = "A".repeat(Name.MAX_LENGTH);
+    private static final String INVALID_OVER_MAX_LENGTH_NAME = "A".repeat(Name.MAX_LENGTH + 1);
+
     @Test
     public void constructor_null_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new Name(null));
@@ -24,18 +27,24 @@ public class NameTest {
         // null name
         assertThrows(NullPointerException.class, () -> Name.isValidName(null));
 
-        // invalid name
+        // Equivalent Partitioning (invalid): blank, whitespace-only, invalid characters
         assertFalse(Name.isValidName("")); // empty string
         assertFalse(Name.isValidName(" ")); // spaces only
         assertFalse(Name.isValidName("^")); // only non-alphanumeric characters
         assertFalse(Name.isValidName("peter*")); // contains non-alphanumeric characters
 
-        // valid name
+        // Boundary Value Analysis: max length + 1 should be rejected
+        assertFalse(Name.isValidName(INVALID_OVER_MAX_LENGTH_NAME));
+
+        // Equivalent Partitioning (valid): common name formats
         assertTrue(Name.isValidName("peter jack")); // alphabets only
         assertTrue(Name.isValidName("12345")); // numbers only
         assertTrue(Name.isValidName("peter the 2nd")); // alphanumeric characters
         assertTrue(Name.isValidName("Capital Tan")); // with capital letters
         assertTrue(Name.isValidName("David Roger Jackson Ray Jr 2nd")); // long names
+
+        // Boundary Value Analysis: exactly max length should be accepted
+        assertTrue(Name.isValidName(VALID_MAX_LENGTH_NAME));
     }
 
     @Test

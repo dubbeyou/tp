@@ -19,16 +19,23 @@ public class NoteTest {
         // null note
         assertThrows(NullPointerException.class, () -> Note.isValidNote(null));
 
-        // valid notes
+        // Equivalent Partitioning (EP): valid inputs
         assertTrue(Note.isValidNote("")); // empty string
         assertTrue(Note.isValidNote("Likes baseball")); // alphabets with spaces
         assertTrue(Note.isValidNote("12345678")); // numbers
         assertTrue(Note.isValidNote("Note,with,fullstop.")); // comma and full stop
         assertTrue(Note.isValidNote("Has spaces")); // spaces are allowed
 
-        // invalid notes
+        // Equivalent Partitioning (EP): invalid inputs
         assertFalse(Note.isValidNote("note!")); // unsupported punctuation
         assertFalse(Note.isValidNote("line\nbreak")); // line breaks are not allowed
+
+        // Boundary Value Analysis (BVA): note length around MAX_LENGTH
+        String noteAtMaxLength = "a".repeat(Note.MAX_LENGTH);
+        String noteAboveMaxLength = "a".repeat(Note.MAX_LENGTH + 1);
+
+        assertTrue(Note.isValidNote(noteAtMaxLength)); // boundary: exactly MAX_LENGTH
+        assertFalse(Note.isValidNote(noteAboveMaxLength)); // boundary: MAX_LENGTH + 1
     }
 
     @Test

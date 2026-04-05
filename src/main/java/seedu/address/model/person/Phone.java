@@ -11,8 +11,20 @@ public class Phone {
 
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Phone numbers should only contain numbers, and it should be at least 3 digits long";
-    public static final String VALIDATION_REGEX = "\\d{3,}";
+            "Phone numbers should be an 8-digit local number starting with 6, 8, or 9 (spaces or hyphens allowed "
+                    + "as XXXX XXXX or XXXX-XXXX), a toll-free number in the format 1800 XXX XXXX, 1800-XXX-XXXX, "
+                    + "or 1800XXXXXXX, or a valid emergency number (995, 999, 1700).";
+
+    /*
+     * Regex breakdown (alternatives separated by '|'):
+     * - [689]\d{7}               : 8-digit local number starting with 6, 8, or 9
+     * - [689]\d{3}[ -]\d{4}      : local number with one separator (space or hyphen), e.g. 9123 4567
+     * - 1800[ -]\d{3}[ -]\d{4}   : toll-free with separators, e.g. 1800 123 4567 / 1800-123-4567
+     * - 1800\d{7}                : compact toll-free, e.g. 18001234567
+     * - 995|999|1700             : accepted emergency/service numbers
+     */
+    public static final String VALIDATION_REGEX =
+            "(?:[689]\\d{7}|[689]\\d{3}[ -]\\d{4}|1800[ -]\\d{3}[ -]\\d{4}|1800\\d{7}|995|999|1700)";
     public final String value;
 
     /**

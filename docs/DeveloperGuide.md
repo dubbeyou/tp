@@ -365,7 +365,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
    * 2a2. User re-enters data.
 
      Steps 2a1–2a2 are repeated until the data entered is valid.
- 
+
      Use case resumes from step 3.
 
 

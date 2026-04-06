@@ -257,9 +257,13 @@ The `find` command enforces a **Strict Single-Mode policy** — only one search 
 
 **Name search rules:**
 * Name search is case-insensitive. e.g., `hans` will match `Hans`
+* Name search finds names that **starts with** the provided name keyword.
+* Multiple name keywords are treated separately.
+  * `find n/Ale Ber` will match `Alex` and `Bernice`
 
 **Tag search rules:**
 * Tag search is case-insensitive. e.g., `FAMILY` will match `family`
+* Tag search finds tags that **starts with** the provided tag keyword.
 * Only **one tag** can be searched at a time.
 
 **Date search rules:**

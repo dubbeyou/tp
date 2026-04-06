@@ -37,6 +37,7 @@ public class AddressTest {
 
         // Equivalent Partitioning (valid): common real-world address formats
         assertTrue(Address.isValidAddress("Blk 456, Den Road, #01-355"));
+        assertTrue(Address.isValidAddress("#01-355, Blk 456, Den Road")); // starts with allowed special character
         assertTrue(Address.isValidAddress("Leng Inc, 1234 Market St, San Francisco CA 2349879")); // long address
         assertTrue(Address.isValidAddress("One George Street (Tower A), #15-01"));
 

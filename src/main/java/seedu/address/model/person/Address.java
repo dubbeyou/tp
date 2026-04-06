@@ -17,12 +17,12 @@ public class Address {
 
     /*
      * Regex breakdown:
-     * - [\p{Alnum}]                 : first character must be alphanumeric (prevents blank input)
-     * - [\p{Alnum} ,.#'()\-]*       : remaining characters may include letters/digits, spaces, and
-     *                                 common address punctuation: comma, period, hashtag, apostrophe,
-     *                                 parentheses, and hyphen
+     * - (?=.*[\\p{Alnum},.#'()\\-]) : ensures there is at least one non-space allowed character
+     *                                   (rejects whitespace-only input)
+     * - [\\p{Alnum} ,.#'()\\-]+      : one or more allowed address characters, including spaces
+     *                                   and punctuation, from the start of the string
      */
-    public static final String VALIDATION_REGEX = "[\\p{Alnum}][\\p{Alnum} ,.#'()\\-]*";
+    public static final String VALIDATION_REGEX = "(?=.*[\\p{Alnum},.#'()\\-])[\\p{Alnum} ,.#'()\\-]+";
 
     public final String value;
 

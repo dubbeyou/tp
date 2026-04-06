@@ -28,7 +28,7 @@ import seedu.address.model.tag.Tag;
 public class ParserUtilTest {
     private static final String INVALID_NAME = "R@chel";
     private static final String INVALID_LONG_NAME = "A".repeat(Name.MAX_LENGTH + 1);
-    private static final String INVALID_PHONE = "+651234";
+    private static final String INVALID_PHONE = "+-- ";
     private static final String INVALID_ADDRESS = " ";
     private static final String INVALID_ADDRESS_WITH_SLASH = "12/34 Main Street";
     private static final String INVALID_EMAIL = "example.com";
@@ -112,7 +112,7 @@ public class ParserUtilTest {
     @Test
     public void parsePhone_invalidValue_throwsParseException() {
         assertThrows(ParseException.class, () -> ParserUtil.parsePhone(INVALID_PHONE));
-        assertThrows(ParseException.class, () -> ParserUtil.parsePhone("93-121534"));
+        assertThrows(ParseException.class, () -> ParserUtil.parsePhone("(123) 456-7890")); // parentheses not allowed
     }
 
     @Test

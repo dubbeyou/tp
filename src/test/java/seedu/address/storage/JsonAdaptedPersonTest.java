@@ -22,13 +22,12 @@ import seedu.address.model.person.VisitDateTime;
 
 public class JsonAdaptedPersonTest {
     private static final String INVALID_NAME = "R@chel";
-    private static final String INVALID_PHONE = "+651234";
+    private static final String INVALID_PHONE = "+-- ";
     private static final String INVALID_ADDRESS = " ";
     private static final String INVALID_EMAIL = "example.com";
     private static final String INVALID_NOTE = "\u0000";
     private static final String INVALID_TAG = "#friend";
     private static final String INVALID_VISIT_DATE_TIME = "2020-13-01 10:00";
-    private static final Boolean INVALID_IS_ARCHIVED = false;
 
     private static final String VALID_NAME = BENSON.getName().toString();
     private static final String VALID_PHONE = BENSON.getPhone().toString();

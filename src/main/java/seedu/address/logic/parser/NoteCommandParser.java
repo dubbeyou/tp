@@ -35,7 +35,8 @@ public class NoteCommandParser implements Parser<NoteCommand> {
                     NoteCommand.MESSAGE_USAGE));
         }
 
-        String note = argMultimap.getValue(PREFIX_NOTE).orElse("");
-        return new NoteCommand(index, new Note(note));
+        String noteValue = argMultimap.getValue(PREFIX_NOTE).orElse("");
+        Note note = ParserUtil.parseNote(noteValue);
+        return new NoteCommand(index, note);
     }
 }

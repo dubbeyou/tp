@@ -148,7 +148,12 @@ public class ParserUtil {
      * Parses a {@code String note} into a {@code Note}.
      */
     public static Note parseNote(String note) throws ParseException {
-        return parseField(note, Note::isValidNote, Note.MESSAGE_CONSTRAINTS, Note::new);
+        requireNonNull(note);
+        String trimmedNote = note.trim();
+        if (!Note.isValidNote(trimmedNote)) {
+            throw new ParseException(Note.MESSAGE_CONSTRAINTS);
+        }
+        return new Note(trimmedNote);
     }
 
     /**

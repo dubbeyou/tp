@@ -1077,15 +1077,14 @@ Expected:
 ### Deleting contact(s) : `delete`
 
 *Prerequisites:*
-- At least 5 contacts exist (for bulk/range scenarios).
+- At least 5 contacts exist.
 - Run `list` before each INDEX-based test case.
 - There are fewer than 999 contacts.
 
 !!**Positive Test Case 1: Delete single index**!!
 
 Steps:
-1. Run `list`
-2. Run `delete 2`
+1. Run `delete 2`
 
 Expected:
 - Contact at index 2 is removed.
@@ -1135,12 +1134,12 @@ Expected:
 *Prerequisites:*
 - At least one archived contact exists for positive flow.
 - Run `list-archive` before each INDEX-based test case.
+- There are fewer than 999 archived contacts.
 
 !!**Positive Test Case 1: Unarchive from archived list**!!
 
 Steps:
-1. Run `list-archive`
-2. Run `unarchive 1`
+1. Run `unarchive 1`
 
 Expected:
 - Command succeeds with `Unarchived: ...` message.
@@ -1156,8 +1155,7 @@ Expected:
 !!**Negative Test Case 2: Out-of-range index**!!
 
 Steps:
-1. Run `list-archive`
-2. Run `unarchive 999`
+1. Run `unarchive 999`
 
 Expected:
 - Command fails with message: `The contact index provided is invalid.`

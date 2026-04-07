@@ -164,27 +164,36 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented.
 
-### Archive Function
+### Archive Feature
 
 #### Implementation
 
 The archive mechanism is implemented using an archive flag stored inside each person.
 
-- Each person has an isArchived state.
+- Each person has an `isArchived` state.
 - Active views hide archived persons by default.
-- The archive command marks a selected person as archived.
-- The unarchive command restores a selected archived person.
-- The list-archive command filters and shows only archived persons.
+- The `archive` command marks a selected person as archived.
+- The `unarchive` command restores a selected archived person.
+- The `list-archive` command filters and shows only archived persons.
 
 #### Command Flow
 
-1. User enters archive INDEX.
-2. Logic routes the command text to ArchiveCommandParser.
-3. Parser validates input and creates ArchiveCommand.
-4. ArchiveCommand checks that INDEX exists in the current filtered list.
-5. Model marks the selected person as archived.
+The sequence diagram below illustrates the interactions within the Logic component when executing the command `archive 1`.
+
+<puml src="diagrams/ArchiveSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the archive command" /> 
+
+<box type="info" seamless>
+
+**Note:** The lifeline for `ArchiveCommandParser` should end at the destroy marker (X), but due to a limitation of PlantUML, the lifeline continues till the end of the diagram.
+</box>
+
+1. User enters `archive INDEX`.
+2. Logic routes the command text to `ArchiveCommandParser`.
+3. Parser validates input and creates `ArchiveCommand`.
+4. `ArchiveCommand` checks that `INDEX` exists in the current filtered list.
+5. Model marks the selected person as **archived**.
 6. Model refreshes the current filtered list.
-7. Logic saves the updated address book to storage.
+7. Logic saves the updated address book to `storage`.
 8. UI receives and displays a success message.
 
 #### Why This Design

@@ -1079,6 +1079,7 @@ Expected:
 *Prerequisites:*
 - At least 5 contacts exist (for bulk/range scenarios).
 - Run `list` before each INDEX-based test case.
+- There are fewer than 999 contacts.
 
 !!**Positive Test Case 1: Delete single index**!!
 
@@ -1119,7 +1120,7 @@ Steps:
 1. Run `delete 1 999`
 
 Expected:
-- Command fails with message: `The contact index provided is invalid.`
+- Command fails with message: `Invalid indices: 999. Person does not exist in current list.`
 
 !!**Negative Test Case 3: Invalid token**!!
 

@@ -178,6 +178,15 @@ The archive mechanism is implemented using an archive flag stored inside each pe
 
 #### Command Flow
 
+1. User enters `archive INDEX`.
+2. Logic routes the command text to `ArchiveCommandParser`.
+3. Parser validates input and creates `ArchiveCommand`.
+4. `ArchiveCommand` checks that `INDEX` exists in the current filtered list.
+5. Model marks the selected person as **archived**.
+6. Model refreshes the current filtered list.
+7. Logic saves the updated address book to `storage`.
+8. UI receives and displays a success message.
+
 The sequence diagram below illustrates the interactions within the Logic component when executing the command `archive 1`.
 
 <puml src="diagrams/ArchiveSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the archive command" /> 
@@ -187,14 +196,18 @@ The sequence diagram below illustrates the interactions within the Logic compone
 **Note:** The lifeline for `ArchiveCommandParser` should end at the destroy marker (X), but due to a limitation of PlantUML, the lifeline continues till the end of the diagram.
 </box>
 
-1. User enters `archive INDEX`.
-2. Logic routes the command text to `ArchiveCommandParser`.
-3. Parser validates input and creates `ArchiveCommand`.
-4. `ArchiveCommand` checks that `INDEX` exists in the current filtered list.
-5. Model marks the selected person as **archived**.
-6. Model refreshes the current filtered list.
-7. Logic saves the updated address book to `storage`.
-8. UI receives and displays a success message.
+
+Similarly, how an archive operation goes through the Model component is shown below:
+
+<puml src="diagrams/ArchiveSequenceDiagram-Model.puml" width="420" />
+
+The unarchive command does the opposite. It calls Model#unarchivePerson(personToUnarchive), which updates the selected person’s archive state back to false.
+
+<box type="info" seamless>
+
+Note: list-archive filtering is handled by the command layer via Model#updateFilteredPersonList(p -> p.isArchived()), not inside Model#archivePerson(...).
+
+</box>
 
 #### Why This Design
 

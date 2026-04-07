@@ -730,6 +730,7 @@ Expected:
 
 *Prerequisites:*
 - At least one visible contact exists in the current list.
+- Run `list` before each INDEX-based test unless the test case intentionally uses a filtered list.
 
 !!**Positive Test Case 1: Archive by valid index**!!
 
@@ -835,6 +836,7 @@ Expected:
 
 *Prerequisites:*
 - At least one contact exists in current displayed list.
+- Run `list` before each INDEX-based test case.
 
 !!**Positive Test Case 1: Edit one field**!!
 
@@ -911,7 +913,7 @@ Steps:
 1. Run `find n/Alex David`
 
 Expected:
-- Contacts with matching name keywords are shown.
+- Contacts with any part of their name starting with `Alex` or `David` (case-insensitive) are shown.
 
 !!**Positive Test Case 2: Find by tag**!!
 
@@ -919,7 +921,7 @@ Steps:
 1. Run `find t/friends`
 
 Expected:
-- Contacts with `friends` tag are shown.
+- Contacts with tag(s) starting with `friends` (case-insensitive) are shown.
 
 !!**Positive Test Case 3: Find by specific date**!!
 
@@ -929,7 +931,15 @@ Steps:
 Expected:
 - Contacts with visit date on 2026-12-01 are shown.
 
-!!**Positive Test Case 4: Find by date range**!!
+!!**Positive Test Case 4: Find by today keyword**!!
+
+Steps:
+1. Run `find d/today`
+
+Expected:
+- Contacts with visit date on today are shown.
+
+!!**Positive Test Case 5: Find by date range**!!
 
 Steps:
 1. Run `find sd/2026-01-01 ed/2026-12-31`
@@ -965,6 +975,7 @@ Expected:
 
 *Prerequisites:*
 - At least one contact exists in current displayed list.
+- Run `list` before each INDEX-based test case.
 
 !!**Positive Test Case 1: Add/replace note**!!
 
@@ -993,15 +1004,16 @@ Expected:
 !!**Negative Test Case 2: Invalid index**!!
 
 Steps:
-1. Run `note 999 nt/Follow up`
+1. Run `note -1 nt/Follow up`
 
 Expected:
-- Command fails with message: `The contact index provided is invalid.`
+- Command fails with message: `Invalid index. Index must be a non-zero positive number (1, 2, 3...).`
 
 ### Managing tags for a contact : `tag`
 
 *Prerequisites:*
 - At least one contact exists.
+- Run `list` before each INDEX-based test case.
 
 !!**Positive Test Case 1: Add one tag**!!
 
@@ -1023,6 +1035,7 @@ Expected:
 !!**Positive Test Case 3: Add and delete in one command**!!
 
 Steps:
+1. Ensure contact 1 has `friend` tag.
 1. Run `tag 1 at/family dt/friend`
 
 Expected:
@@ -1057,6 +1070,7 @@ Expected:
 
 *Prerequisites:*
 - At least 5 contacts exist (for bulk/range scenarios).
+- Run `list` before each INDEX-based test case.
 
 !!**Positive Test Case 1: Delete single index**!!
 
@@ -1111,6 +1125,7 @@ Expected:
 
 *Prerequisites:*
 - At least one archived contact exists for positive flow.
+- Run `list-archive` before each INDEX-based test case.
 
 !!**Positive Test Case 1: Unarchive from archived list**!!
 
@@ -1199,7 +1214,9 @@ Expected:
 
 Steps:
 1. Type `add `.
-2. Press `TAB` repeatedly.
+2. Press `TAB` to insert the first prefix.
+3. Type a value for that parameter and add a trailing space.
+4. Press `TAB` again to get the next prefix.
 
 Expected:
 - Prefix suggestions are inserted in order, starting with `n/`.
@@ -1213,6 +1230,16 @@ Steps:
 Expected:
 - Step 1: no prefix suggestion is accepted.
 - Step 2: prefix suggestion is accepted (starts with `n/`).
+
+!!**Positive Test Case 4: Autocomplete stops when command becomes invalid**!!
+
+Steps:
+1. Type `find n/Alex` and press `TAB`.
+2. Type `edit 1 n/Joe x/a` and press `TAB`.
+
+Expected:
+- Step 1: no additional prefix suggestion is accepted for `find`.
+- Step 2: no additional prefix suggestion is accepted because the command input is invalid.
 
 ### Remembering a command
 

@@ -253,6 +253,10 @@ public final class AutocompleteProvider {
             return false;
         }
 
+        if (containsInvalidPrefixToken(args, prefixes)) {
+            return true;
+        }
+
         if (!containsAnyPrefixToken(args, prefixes)) {
             return true;
         }
@@ -263,6 +267,23 @@ public final class AutocompleteProvider {
         }
 
         return !args.substring(0, firstPrefixIndex).isBlank();
+    }
+
+    private static boolean containsInvalidPrefixToken(String args, List<String> prefixes) {
+        assert args != null : "containsInvalidPrefixToken args must not be null";
+        assert prefixes != null : "containsInvalidPrefixToken prefixes must not be null";
+
+        for (String token : args.split("\\s+")) {
+            if (token.isBlank()) {
+                continue;
+            }
+
+            if (token.contains("/") && prefixes.stream().noneMatch(token::startsWith)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static int firstPrefixTokenStartIndex(String args, List<String> prefixes) {

@@ -1,6 +1,7 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_SORT_FIELD;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SORT;
 
 import seedu.address.logic.SortField;
@@ -36,8 +37,7 @@ public class ListCommandParser implements Parser<ListCommand> {
             try {
                 sortField = SortField.valueOf(input);
             } catch (IllegalArgumentException e) {
-                throw new ParseException(
-                        String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_USAGE));
+                throw new ParseException(MESSAGE_INVALID_SORT_FIELD);
             }
         }
 

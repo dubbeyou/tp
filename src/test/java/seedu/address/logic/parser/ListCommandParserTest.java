@@ -3,6 +3,7 @@ package seedu.address.logic.parser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static seedu.address.logic.Messages.MESSAGE_DUPLICATE_FIELDS;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_SORT_FIELD;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SORT;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
@@ -77,7 +78,7 @@ public class ListCommandParserTest {
     public void parse_invalidSort_failure() {
         assertParseFailure(parser,
                 " " + PREFIX_SORT + "invalid",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_USAGE));
+                MESSAGE_INVALID_SORT_FIELD);
     }
 
     // EP: another invalid sort value
@@ -85,7 +86,7 @@ public class ListCommandParserTest {
     public void parse_invalidSortField_failure() {
         assertParseFailure(parser,
                 " " + PREFIX_SORT + "date",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_USAGE));
+                MESSAGE_INVALID_SORT_FIELD);
     }
 
     // EP: extra preamble before prefix
@@ -111,7 +112,7 @@ public class ListCommandParserTest {
     public void parse_extraTextAfterPrefix_failure() {
         assertParseFailure(parser,
                 " " + PREFIX_SORT + "name extra",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_USAGE));
+                MESSAGE_INVALID_SORT_FIELD);
     }
 
     // EP: preamble with spaces before prefix
@@ -127,7 +128,7 @@ public class ListCommandParserTest {
     public void parse_textBetweenPrefixes_failure() {
         assertParseFailure(parser,
                 " " + PREFIX_SORT + "name junk",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_USAGE));
+                MESSAGE_INVALID_SORT_FIELD);
     }
 
     // EDGE / HEURISTIC CASES

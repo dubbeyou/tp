@@ -113,6 +113,11 @@ public class HelpWindow extends UiPart<Stage> {
      * Focuses on the help window.
      */
     public void focus() {
+        // Restore the window first so minimised help dialogs are visible again.
+        if (getRoot().isIconified()) {
+            getRoot().setIconified(false);
+        }
+        getRoot().toFront();
         getRoot().requestFocus();
     }
 

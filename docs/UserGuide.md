@@ -180,8 +180,8 @@ Format: `list [s/FIELD]`
 * If no sorting field is provided, all contacts are listed in their default order (i.e. the original stored order of contacts).
 * If a sorting field is provided, the list will be sorted according to the specified field.
 * Valid fields:
-  * `name` — sorts contacts alphabetically by name
-  * `visit` — sorts contacts by visit date and time
+  * `name` - sorts contacts alphabetically by name
+  * `visit` - sorts contacts by visit date and time
 
 <box type="info" header="Note:" seamless>
 
@@ -241,6 +241,11 @@ Examples:
 
 Finds **unarchived** contacts whose information matches the provided search criteria.
 
+<box type="important" seamless>
+
+The `find` command enforces a **Strict Single-Mode policy** - only one search mode can be used per command.
+</box>
+
 Format:
 - By name: `find n/KEYWORD [MORE_KEYWORDS]…`
 - By tag: `find t/TAG`
@@ -250,7 +255,7 @@ Format:
 
 <box type="tip" seamless>
 
-The `find` command enforces a **Strict Single-Mode policy** — only one search mode can be used per command.
+**Tip:** `d/`, `sd/` and `ed/` can all use the `today` keyword to specify today's date!
 </box>
 
 <box type="info" seamless>
@@ -267,11 +272,9 @@ The `find` command enforces a **Strict Single-Mode policy** — only one search 
 * Only **one tag** can be searched at a time.
 
 **Date search rules:**
-* Use `find d/today` to find contacts with visits scheduled for the current date.
 * For date ranges, both `sd/` (start date) and `ed/` (end date) prefixes are required.
   * `ed/`can be specified first before `sd/`. i.e, `find ed/END_DATE sd/START_DATE` is also valid.
 * Date specified in `ed/` (end date) must be later than or equal to date specified in `sd/` (start date).
-* `sd/today` and `ed/today` can also be used.
 </box>
 
 Examples:
@@ -361,7 +364,7 @@ Examples:
 
 * `delete 1 3 5` deletes the 1st, 3rd, 5th contact in CareSync.
 * `delete 2-4` deletes the 2nd, 3rd, 4th contact in CareSync.
-* `delete 1 3-5 8` deletes 1st, 3rd, 4th, 5th, 8th contact CareSync.
+* `delete 1 3-5 8` deletes 1st, 3rd, 4th, 5th, 8th contact in CareSync.
 
 ![delete](images/ug_delete.png)
 
@@ -529,7 +532,7 @@ Action     | Format                                                             
     - `24:00` is treated as `00:00` of the next day
     - For any month that has a max date smaller than `31`, inputting an invalid date smaller than `31` (inclusive) will be rounded to the highest valid date<br><br>
 - **d/DATE, sd/DATE, ed/DATE**: Refers to the visit date of the contact.
-  - Must be in `yyyy-MM-dd` format
+  - Must be in `yyyy-MM-dd` format or use the `today` keyword to specify today's date
   - For any month that has a max date smaller than `31`, inputting an invalid date smaller than `31` (inclusive) will be rounded to the highest valid date<br><br>
 - **t/TAG, at/TAG_TO_ADD, dt/TAG_TO_DELETE**: Refers to the tag of the contact.
   - Can only contain alphanumeric characters

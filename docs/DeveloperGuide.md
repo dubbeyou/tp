@@ -126,19 +126,20 @@ How the parsing works:
 
 <puml src="diagrams/ModelClassDiagram.puml" width="450" />
 
-
 The `Model` component,
 
-* stores the address book data i.e., all `Person` objects (which are contained in a `UniquePersonList` object).
-* stores the currently 'selected' `Person` objects (e.g., results of a search query) as a separate _filtered_ list which is exposed to outsiders as an unmodifiable `ObservableList<Person>` that can be 'observed' e.g. the UI can be bound to this list so that the UI automatically updates when the data in the list change.
-* stores a `UserPref` object that represents the user’s preferences. This is exposed to the outside as a `ReadOnlyUserPref` objects.
+* stores the address book data i.e., all `Person` objects (which are contained in a `UniquePersonList` object). Each `Person` holds exactly one `Name`, `Phone`, `Email`, `Address`, `Note`, and `VisitDateTime` object, along with zero or more `Tag` objects.
+* manages the lifecycle of clients' data, including adding, deleting, and archiving/unarchiving persons.
+* stores the currently 'selected' `Person` objects as a _separate filtered list_ which is exposed as an unmodifiable `ObservableList<Person>` to be viewed. The UI can be bound to this list so that UI can automatically update when the data in the list changes.
+* supports dynamic filtering of the person list via predicates such as `NameContainsKeywordsPredicate`, `TagContainsPredicate` (with partial matching), and `VisitContainsDatePredicate`.
+* provides an interface for sorting the filtered list via `sortFilteredPersonList`, allowing users to reorder the UI view without changing the original data order.
+* stores a `UserPrefs` object that represents the user's preferences. This is exposed to the outside as a `ReadOnlyUserPrefs` object.
+* exposes the address book data as a `ReadOnlyAddressBook` object to prevent unintended modification from outside the `Model`.
 * does not depend on any of the other three components (as the `Model` represents data entities of the domain, they should make sense on their own without depending on other components)
 
 <box type="info" seamless>
 
-**Note:** An alternative (arguably, a more OOP) model is given below. It has a `Tag` list in the `AddressBook`, which `Person` references. This allows `AddressBook` to only require one `Tag` object per unique tag, instead of each `Person` needing their own `Tag` objects.<br>
-
-<puml src="diagrams/BetterModelClassDiagram.puml" width="450" />
+**Note:** `Note` and `VisitDateTime` are optional fields from the user's perspective. However, a `Person` object always contains one `Note` and one `VisitDateTime` object, empty values simply represent fields that have not been set by the user. Also, the `isArchived` flag is a boolean attribute used by the `Model` to determine a person's visibility in the person list.
 
 </box>
 
@@ -348,12 +349,12 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Guarantee:**
 - If successful, the contact will be stored and visible in the contact list.
-- A duplicate contact will never be added.
+- A duplicate contact (same name) will never be added.
 - Malformed contacts based on invalid command entry will never be added.
 
 **MSS**
 
-1.  User enters the required details to add a contact.
+1.  User enters the required details (`Name`, `Phone`, `Email`, `Address`) to add a contact. Optional fields like `Note` and `VisitDateTime` can also be included.
 2.  CareSync validates the entered data.
 3.  CareSync stores the new contact.
 4.  CareSync displays a success message.
@@ -362,7 +363,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Extensions**
 
-* 2a. CareSync detects invalid input format.
+* 2a. CareSync detects invalid input format (e.g., invalid email or incorrectly formatted visit date).
 
    * 2a1. CareSync displays an error message.
    * 2a2. User re-enters data.
@@ -372,7 +373,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
      Use case resumes from step 3.
 
 
-* 2b. CareSync detects existing contact.
+* 2b. CareSync detects existing contact with the same name.
 
     * 2b1. CareSync notifies the user that the contact already exists.
     * 2b2. User re-enters data.
@@ -392,7 +393,7 @@ If successful, the selected contact’s details will be updated and saved.
 **MSS**
 
 1.  CareSync displays contact(s).
-2.  User specifies the ID of the contact and fields to be updated (e.g., phone number or address).
+2.  User specifies the ID of the contact and fields to be updated (e.g., `n/`, `p/`, `e/`, `a/`, `nt/`, `v/`, `t/`).
 3.  CareSync validates the new data.
 4.  CareSync updates the contact information.
 5.  CareSync displays a success message.
@@ -417,105 +418,139 @@ If successful, the selected contact’s details will be updated and saved.
 
       Use case resumes from step 4.
 
-**Use case: UC3 - Delete Contact**
+**Use case: UC3 - Delete Contact(s)**
 
 **Precondition:**
-A contact exists in CareSync.
+One or more contacts exist in CareSync.
 
 **Guarantee:**
-If successful, the contact will be permanently removed from CareSync.
+If successful, the specified contact(s) will be permanently removed from CareSync. if any index is invalid, ***no contacts are deleted***.
 
 **MSS**
 
 1.  CareSync displays contact(s).
-2.  User specifies the ID of the contact to be deleted.
-3.  CareSync validates the contact’s existence.
-4.  CareSync removes the contact from storage.
+2.  User specifies the ***ID(s) or Range of ID(s)*** of the contacts to be deleted (e.g., delete 1 3-5).
+3.  CareSync validates all specified contacts indexes.
+4.  CareSync removes the contact(s) from storage.
 5.  CareSync displays a success message and an updated list.
 
     Use case ends.
 
 **Extensions**
 
-* 3a. User entered an invalid ID.
+* 3a. User entered an invalid ID or an invalid range (e.g., `3-1`).
 
    * 3a1. CareSync displays an error message.
-   * 3a2. User re-enters data.
+   * 3a2. No contacts are deleted.
+   * 3a3. User re-enters data.
 
-     Steps 3a1–3a2 are repeated until the data entered is valid.
+     Steps 3a1–3a3 are repeated until the data entered is valid.
 
      Use case resumes from step 4.
 
-**Use case: UC4 - Search Contact via Name**
+**Use case: UC4 - Search Contact (Find)**
 
-**Guarantee:** Matching contact(s), if any, are displayed to the user.
+**Guarantee:** Matching contact(s) are displayed to the user, if any. CareSync enforces a strict ***Single-Mode*** policy.
 
 **MSS**
 
-1.  User specifies the name to be searched.
-2.  CareSync validates the contact's existence.
-3.  CareSync retrieves the matching contact(s).
-4.  CareSync displays the search results.
+1.  User specifies a search criteria using exactly one prefix (`n/`, `t/`, `d/`, `sd/` + `ed/`).
+2.  CareSync validates that no preamble exists and only one input search mode.
+3.  CareSync retrieves and displays matching contact(s).
 
     Use case ends.
 
 **Extensions**
 
-* 2a. No matching contact is found.
+* 2a. User provides multiple search modes or text before the prefix.
+  
+    * 2a1. CareSync displays an relevant error message.
 
-    * 2a1. CareSync displays a message indicating no results.
+      Use case ends.
+  
+* 3a. No matching contact is found.
+
+    * 3a1. CareSync displays a message indicating no results.
 
       Use case ends.
 
-**Use case: UC5 - Search Contact via Tag**
-
-**Guarantee:** Matching contact(s), if any, are displayed to the user.
+**Use case: UC5 - Manage Notes**
 
 **MSS**
 
-1.  User specifies the tag to be searched.
-2.  CareSync validates the contact's existence.
-3.  CareSync retrieves the matching contact(s).
-4.  CareSync displays the search results.
+1.  User specifies the ID of the contact and provides a note (e.g., `note 1 nt/Needs extra assistance`).
+2.  CareSync updates the contact's note. (To clear a note, the user provides an empty `nt/` prefix).
+3.  CareSync displays a success message.
+
+    Use case ends.
+
+**Use case: UC6 - Manage Tags**
+
+**MSS**
+
+1.  User specifies the ID of the contact and tags to add (`at/`)or delete (`dt/`).
+2.  CareSync validates the tags to add not exist and tags to delete exist.
+3.  CareSync updates the contact's tag set.
 
     Use case ends.
 
 **Extensions**
 
-* 2a. No matching contact is found.
+* 2a. Validation fails (e.g., deleting a tag the contact does not have).
 
-    * 2a1. CareSync displays a message indicating no results.
+    * 2a1. CareSync displays an error message. ***No changes are applied***.
+    * Use case ends.
 
-      Use case ends.
-
-**Use case: UC6 - Set Visit Date and Time**
-
-**Precondition:** Contact exists in CareSync.
-
-**Guarantee:** If successful, the next visit date and time for the contact is updated and saved.
+**Use case: UC7 - Archive / Unarchive Contact**
 
 **MSS**
 
-1.  CareSync displays contact(s).
-2.  User specifies the ID of the contact and the fields to be updated (e.g. visit date).
-3.  CareSync validates the date format.
-4.  CareSync updates the next visit date and time for the contact.
-5.  CareSync displays a success message.
+1.  User specifies the ID of the contact to `archive` (or `unarchive`).
+2.  CareSync validates if the contact exist (e.g., cannot archive a contact that index out of bound).
+3.  CareSync toggles the archive status.
+4.  CareSync refreshes the displayed list.
 
     Use case ends.
 
-**Extensions**
+**Use case: UC8 - Sort Contact List**
 
-* 3a. CareSync detects invalid input format.
+**MSS**
 
-    * 3a1. CareSync displays an error message.
-    * 3a2. User re-enters correct data.
+1.  User requests to list contacts with a sort field (e.g., `list s/visit`).
+2.  CareSync validates the field and reorders the list.
+3.  CareSync displays the sorted list. (Sorting will remain persistent until cleared).
 
-      Steps 3a1-3a2 are repeated until the data entered is valid.
+    Use case ends.
 
-      Use case resumes from step 4.
+**Use case: UC9 - View Archived Contacts**
 
-*{More may be added in the future}*
+**MSS**
+
+1.  User requests to see the archive list (`list-archive`).
+2.  CareSync filters and displays only contacts where boolean `isArchived` is true.
+
+    Use case ends.
+
+
+**Use case: UC10 - Clear All Entries**
+
+**MSS**
+
+1.  User requests to clear all data.
+2.  CareSync removes all contacts from the address book.
+3.  CareSync displays an empty list.
+
+    Use case ends.
+
+**Use case: UC11 - Command Autocompletion**
+
+**MSS**
+
+1.  User types the beginning of a command or prefix.
+2.  User presses `RETURN` on keyboard.
+3.  CareSync suggests or completes the command/prefix in the command box.
+
+    Use case ends.
 
 ### Non-Functional Requirements
 

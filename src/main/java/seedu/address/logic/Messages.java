@@ -39,7 +39,6 @@ public class Messages {
     public static final String MESSAGE_NONEXISTENCE_INDEX =
             "Invalid indices: %1$s.\nPerson does not exist in current list.";
 
-    public static final String MESSAGE_DUPLICATE_TAGS = "Duplicate tags detected! Tag names are case-insensitive";
 
     /**
      * Returns an error message indicating the duplicate prefixes.

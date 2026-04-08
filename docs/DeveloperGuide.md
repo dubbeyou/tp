@@ -565,6 +565,13 @@ testers are expected to do more *exploratory* testing.
 
 </box>
 
+### Manual testing conventions
+
+- Detailed command syntax, parameter constraints, and usage examples are documented in the [User Guide](UserGuide.md) under each command section
+- DG manual tests focus on behavior verification (state change, list update, and error handling), not re-explaining command format
+- For commands using `INDEX`, run `list` first (or `list-archive` for `unarchive`) unless the test case explicitly requires a filtered list
+- Where a negative test lists a message, verify the exact message shown in the result box
+
 ### Launch and shutdown
 
 !!**Initial launch**!!
@@ -591,6 +598,7 @@ Expected:
 
 *Prerequisites:*
 - CareSync is running.
+- Refer to [User Guide: Viewing help](UserGuide.md#viewing-help--help) for command usage
 
 !!**Positive Test Case 1: Run the help command**!!
 
@@ -623,6 +631,7 @@ Expected:
 *Prerequisites:*
 - CareSync is running.
 - Run `list` to see the current contact list.
+- Refer to [User Guide: Adding a contact](UserGuide.md#adding-a-contact-add) for full field rules
 
 !!**Positive Test Case 1: Add with compulsory fields only**!!
 
@@ -640,7 +649,7 @@ Steps:
 
 Expected:
 - Message: `New contact added: ...`
-- Contact is added with note, visit date/time, and tag.
+- Contact is added with optional fields populated.
 
 !!**Positive Test Case 3: Add contacts with duplicate non-name fields**!!
 
@@ -739,6 +748,7 @@ Expected:
 *Prerequisites:*
 - At least one visible contact exists in the current list.
 - Run `list` before each INDEX-based test unless the test case intentionally uses a filtered list.
+- Refer to [User Guide: Archiving a contact](UserGuide.md#archiving-a-contact--archive) for command usage
 
 !!**Positive Test Case 1: Archive by valid index**!!
 
@@ -777,6 +787,7 @@ Expected:
 
 *Prerequisites:*
 - CareSync is running.
+- Refer to [User Guide: Listing all unarchived contacts](UserGuide.md#listing-all-unarchived-contacts--list) for sorting behavior details
 
 !!**Positive Test Case 1: List without sorting**!!
 
@@ -822,6 +833,7 @@ Expected:
 
 *Prerequisites:*
 - At least one archived contact exists (optional, for non-empty results).
+- Refer to [User Guide: Listing all archived contacts](UserGuide.md#listing-all-archived-contacts--list-archive) for command usage
 
 !!**Positive Test Case 1: List archived contacts**!!
 
@@ -844,6 +856,7 @@ Expected:
 *Prerequisites:*
 - At least one contact exists in current displayed list.
 - Run `list` before each INDEX-based test case.
+- Refer to [User Guide: Editing a contact](UserGuide.md#editing-a-contact--edit) for field behavior (including tag replacement via `t/`)
 
 !!**Positive Test Case 1: Edit one field**!!
 
@@ -913,6 +926,7 @@ Expected:
 
 *Prerequisites:*
 - CareSync is running.
+- Refer to [User Guide: Locating contacts by specified field](UserGuide.md#locating-contacts-by-specified-field-find) for single-mode and prefix rules
 
 !!**Positive Test Case 1: Find by name keywords**!!
 
@@ -983,6 +997,7 @@ Expected:
 *Prerequisites:*
 - At least one contact exists in current displayed list.
 - Run `list` before each INDEX-based test case.
+- Refer to [User Guide: Adding note to a contact](UserGuide.md#adding-note-to-a-contact--note) for note semantics
 
 !!**Positive Test Case 1: Add/replace note**!!
 
@@ -1021,6 +1036,7 @@ Expected:
 *Prerequisites:*
 - At least one contact exists.
 - Run `list` before each INDEX-based test case.
+- Refer to [User Guide: Managing tags for a contact](UserGuide.md#managing-tags-for-a-contact--tag) for `at/` and `dt/` behavior
 
 !!**Positive Test Case 1: Add one tag**!!
 
@@ -1079,6 +1095,7 @@ Expected:
 - At least 5 contacts exist.
 - Run `list` before each INDEX-based test case.
 - There are fewer than 999 contacts.
+- Refer to [User Guide: Deleting contacts](UserGuide.md#deleting-contacts--delete) for index/range syntax rules
 
 !!**Positive Test Case 1: Delete single index**!!
 
@@ -1166,6 +1183,7 @@ Expected:
 - At least one archived contact exists for positive flow.
 - Run `list-archive` before each INDEX-based test case.
 - There are fewer than 999 archived contacts.
+- Refer to [User Guide: Unarchiving a contact](UserGuide.md#unarchiving-a-contact--unarchive) for command usage
 
 !!**Positive Test Case 1: Unarchive from archived list**!!
 
@@ -1195,6 +1213,7 @@ Expected:
 
 *Prerequisites:*
 - At least one contact exists.
+- Refer to [User Guide: Clearing all entries](UserGuide.md#clearing-all-entries--clear) for command usage
 
 !!**Positive Test Case 1: Clear all contacts**!!
 
@@ -1217,6 +1236,7 @@ Expected:
 
 *Prerequisites:*
 - CareSync is running.
+- Refer to [User Guide: Exiting the program](UserGuide.md#exiting-the-program--exit) for command usage
 
 !!**Positive Test Case 1: Exit command**!!
 
@@ -1238,6 +1258,7 @@ Expected:
 
 *Prerequisites:*
 - CareSync command box is focused.
+- Refer to [User Guide: Autocompleting a command](UserGuide.md#autocompleting-a-command) for autocomplete rules
 
 !!**Positive Test Case 1: Autocomplete command word**!!
 
@@ -1283,6 +1304,7 @@ Expected:
 
 *Prerequisites:*
 - CareSync command box is focused.
+- Refer to [User Guide: Remembering a command](UserGuide.md#remembering-a-command) for history behavior
 
 !!**Positive Test Case 1: Recall older commands**!!
 
@@ -1314,6 +1336,8 @@ Expected:
 - Only one `list` entry is recalled for consecutive duplicate submissions.
 
 ### Saving data
+
+Refer to [User Guide: Saving the data](UserGuide.md#saving-the-data) and [User Guide: Editing the data file](UserGuide.md#editing-the-data-file) for storage behavior details.
 
 !!**Positive Test Case 1: Missing data file**!!
 

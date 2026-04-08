@@ -74,4 +74,22 @@ public class TagContainsPredicateTest {
 
         assertTrue(predicate.test(person));
     }
+
+    @Test
+    public void test_emptyTag_returnsFalse() {
+        TagContainsPredicate predicate = new TagContainsPredicate("  ");
+        assertFalse(predicate.test(new PersonBuilder().withTags("Friends").build()));
+    }
+
+    @Test
+    public void test_tagStartsWith_returnsTrue() {
+        TagContainsPredicate predicate = new TagContainsPredicate("frie");
+        assertTrue(predicate.test(new PersonBuilder().withTags("Friends").build()));
+    }
+
+    @Test
+    public void test_mixedCaseTrailingSpaces_returnsTrue() {
+        TagContainsPredicate predicate = new TagContainsPredicate("  FriENds  ");
+        assertTrue(predicate.test(new PersonBuilder().withTags("Friends").build()));
+    }
 }

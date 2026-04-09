@@ -143,7 +143,7 @@ The `Model` component,
 
 <box type="info" seamless>
 
-**Note:** `Note` and `VisitDateTime` are optional fields from the user's perspective. However, a `Person` object always contains one `Note` and one `VisitDateTime` object, empty values simply represent fields that have not been set by the user. Also, the `isArchived` flag is a boolean attribute used by the `Model` to determine a person's visibility in the person list.
+**Note:** `Note` and `VisitDateTime` are optional fields from the user's perspective. However, a `Person` object always contains one `Note` and one `VisitDateTime` object, empty values simply represent fields that have not been set by the user. Also, the `isArchived` flag is a boolean attribute used by the `Model` to determine a contact's visibility in the default contact list.
 
 </box>
 

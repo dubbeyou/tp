@@ -22,6 +22,10 @@ Class Tag
 Class Note
 Class VisitDateTime
 
+Class NameContainsKeywordsPredicate
+Class TagContainsPredicate
+Class VisitContainsDatePredicate
+
 note as PersonOptionalFieldsNote
   Note and VisitDateTime are optional fields for users.
   Person always contains one Note and one VisitDateTime object.
@@ -30,7 +34,6 @@ end note
 
 Person . PersonOptionalFieldsNote
 
-Class I #FFFFFF
 }
 
 Class HiddenOutside #FFFFFF
@@ -55,7 +58,6 @@ Person *--> "1" Note
 Person *--> "1" VisitDateTime
 Person *--> "*" Tag
 
-
 Person -[hidden]up--> I
 UniquePersonList -[hidden]right-> I
 
@@ -64,4 +66,11 @@ Phone -[hidden]right-> Address
 Address -[hidden]right-> Email
 
 ModelManager --> "~* filtered" Person
+
+ModelManager ..> NameContainsKeywordsPredicate : uses
+ModelManager ..> TagContainsPredicate : uses
+ModelManager ..> VisitContainsDatePredicate : uses
+
+NameContainsKeywordsPredicate -[hidden]right-> TagContainsPredicate
+TagContainsPredicate -[hidden]right-> VisitContainsDatePredicate
 @enduml

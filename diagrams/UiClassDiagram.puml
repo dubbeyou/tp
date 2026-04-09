@@ -42,29 +42,27 @@ PersonListPanel -down-> "*" PersonCard
 CommandBox -down-> "1" CommandHistory
 HelpWindow .right.> HelpContentProvider
 
-MainWindow -left-|> UiPart
+MainWindow --|> UiPart
 
-PersonCard -down-|> UiPart
+PersonCard --|> UiPart
 
-PersonListPanel -down-|> UiPart
-ResultDisplay -down-|> UiPart
-StatusBarFooter -down-|> UiPart
+PersonListPanel --|> UiPart
+ResultDisplay --|> UiPart
+StatusBarFooter --|> UiPart
 
-CommandBox -down-|> UiPart
-HelpWindow -down-|> UiPart
+CommandBox --|> UiPart
+HelpWindow --|> UiPart
 
 PersonCard .right.> Model
 UiManager -right-> Logic
 MainWindow -left-> Logic
-CommandBox .down.> Logic
+CommandBox .right.> Logic
 HelpContentProvider .right.> Logic
+
 
 HelpWindow -[hidden]left- CommandBox
 CommandBox -[hidden]left- PersonListPanel
 PersonListPanel -[hidden]left- ResultDisplay
 ResultDisplay -[hidden]left- StatusBarFooter
-MainWindow -[hidden]right- Logic
-CommandBox -[hidden]right- Logic
-CommandBox -[hidden]right- Logic
 
 @enduml

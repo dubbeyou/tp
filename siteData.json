@@ -77,7 +77,8 @@
         "exiting-the-program-exit": "Exiting the program : exit",
         "autocompleting-a-command": "Autocompleting a command",
         "remembering-a-command": "Remembering a command",
-        "saving-data": "Saving data"
+        "saving-data": "Saving data",
+        "appendix-effort": "Appendix: Effort"
       },
       "headingKeywords": {}
     },

@@ -184,56 +184,56 @@ This section describes some noteworthy details on how certain features are imple
 
 ### Archive Feature
 
-#### Proposed Implementation
+#### Implementation
 
-The archive mechanism is facilitated by an archive flag stored in each Person.
+The `archive` mechanism is facilitated by an archive flag stored in each Person.
 A person is considered archived when this flag is true, and active otherwise.
 
 The mechanism uses the following Model operations:
 
-- archivePerson(person): marks a person as archived.
-- unarchivePerson(person): marks a person as active again.
-- updateFilteredPersonList(predicate): refreshes the displayed list for the current command context.
+- `archivePerson(person)`: marks a person as archived.
+- `unarchivePerson(person)`: marks a person as active again.
+- `updateFilteredPersonList(predicate)`: refreshes the displayed list for the current command context.
 
 Given below is an example usage scenario and how the archive mechanism behaves at each step.
 
-Step 1. The user executes archive 1.
-The archive command validates the index against the current filtered list and archives the selected person.
+Step 1. The user executes `archive 1`.
+The `archive` command validates the index against the current filtered list and archives the selected person.
 
 Step 2. The command refreshes the filtered list using the current predicate so the UI reflects the updated state.
 
-Step 3. The user executes list-archive.
+Step 3. The user executes `list-archive`.
 The displayed list is filtered to show only archived persons.
 
-Step 4. The user executes unarchive 1 from the archived list.
+Step 4. The user executes `unarchive 1` from the archived list.
 The unarchive command marks the selected person as active again and refreshes the list.
 
-Step 5. The command result is returned to Logic, and Logic persists the updated address book through Storage.
+Step 5. The command result is returned to `Logic`, and `Logic` persists the updated address book through Storage.
 
-The following sequence diagram shows how an archive operation goes through the Logic component:
+The following sequence diagram shows how an archive operation goes through the `Logic` component:
 
 <puml src="diagrams/ArchiveSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the archive command" />
 
 <box type="info" seamless>
 
-**Note:** The lifeline for ArchiveCommandParser should end at the destroy marker (X), but due to a limitation of PlantUML, the lifeline continues till the end of the diagram.
+**Note:** The lifeline for `ArchiveCommandParser` should end at the destroy marker (X), but due to a limitation of PlantUML, the lifeline continues till the end of the diagram.
 
 </box>
 
-Similarly, how an archive operation goes through the Model component is shown below:
+Similarly, how an `archive` operation goes through the `Model` component is shown below:
 
 <puml src="diagrams/ArchiveSequenceDiagram-Model.puml" width="420" />
 
-The unarchive command does the opposite. It calls unarchivePerson(person), which restores the selected person to active state.
+The `unarchive` command does the opposite. It calls `unarchivePerson(person)`, which restores the selected person to active state.
 
 <box type="info" seamless>
 
 **Note:** If the selected index is invalid, the command returns an error instead of modifying data.
-**Note:** list-archive filtering is applied through updateFilteredPersonList(predicate), not inside archivePerson(...).
+**Note:** `list-archive` filtering is applied through `updateFilteredPersonList(predicate)`, not inside `archivePerson(...)`.
 
 </box>
 
-The following activity diagram summarizes what happens when a user executes the archive command:
+The following activity diagram summarizes what happens when a user executes the `archive` command:
 
 <puml src="diagrams/ArchiveActivityDiagram.puml" width="420" />
 

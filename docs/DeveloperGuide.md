@@ -79,6 +79,10 @@ The **API** of this component is specified in [`Ui.java`](https://github.com/AY2
 
 The UI consists of a `MainWindow` that is made up of parts e.g.`CommandBox`, `ResultDisplay`, `PersonListPanel`, `StatusBarFooter` etc. All these, including the `MainWindow`, inherit from the abstract `UiPart` class which captures the commonalities between classes that represent parts of the visible GUI.
 
+Additionally, there are two helper classes (i.e.`CommandHistory` and `HelpContentProvider`) that do not inherit from the abstract `UiPart` class. They exist to provide their corresponding UI elements with the necessary information to perform their function.
+* `CommandHistory` stores past commands that the user has entered, regardless if it was a valid command or not, to be used to fill `CommandBox`
+* `HelpContentProvider` gets the information needed to populate `HelpWindow`
+
 The `UI` component uses the JavaFx UI framework. The layout of these UI parts are defined in matching `.fxml` files that are in the `src/main/resources/view` folder. For example, the layout of the [`MainWindow`](https://github.com/AY2526S2-CS2103-F11-1/tp/blob/master/src/main/java/seedu/address/ui/MainWindow.java) is specified in [`MainWindow.fxml`](https://github.com/AY2526S2-CS2103-F11-1/tp/blob/master/src/main/resources/view/MainWindow.fxml)
 
 The `UI` component,

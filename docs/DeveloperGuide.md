@@ -1507,3 +1507,51 @@ Steps:
 
 Expected:
 - Changes are saved correctly in `addressbook.json`
+
+--------------------------------------------------------------------------------------------------------------------
+
+## **Appendix: Effort**
+
+This appendix summarises the overall effort put in by the team for CareSync. Using AB3 as a reference point, it also details the difficulty level, challenges faced, achievements and reuse of the project.
+
+##### Difficulty Level
+
+AB3 manages a single entity with basic features such as:
+- Adding a person
+- Editing a person
+- Deleting a person
+- Finding a person by name
+- Listing all persons
+
+CareSync builds upon these existing features and introduces even more complex features aimed to provide real value to our target users:
+- Adding notes to contacts
+- Storing clients' visit date and time
+- Finding contacts by tag or visit date
+- Sorting the contact list by name or visit date-time
+- Bulk delete operation
+- Archiving contacts
+- Autocomplete commands
+- Cycle through past commands for reuse
+
+Additionally, CareSync introduces constraints of higher complexity in order to reduce bugs and ensure consistency:
+- `NAME`, `PHONE_NUMBER`, `EMAIL`, `ADDRESS`, `NOTE` - character validity and length constraints
+- `TAG` - case-insensitive (for duplicate removal) and length constraints
+- `find` command - mutual exclusivity for search modes and usage of special keywords (i.e. `today`)
+- `delete` command - range index validation
+- Autocomplete - command validity check before suggestions
+- Command History - Collapsing consecutive identical commands
+
+Compared to AB3's single entity workflow, CareSync required more cross-feature validation, parser disambiguation and logic-model-storage-UI synchronisation due to richer contact lifecycle management. The combination of improving features and constraints demanded intricate designing and testing to ensure CareSync's correctness. Moreover, CareSync was built with code quality and design principles in mind, which required further refactoring and architectural deliberation. Some challenges faced include:
+- **Parser and command interaction complexity:** Features such as find modes, today keyword handling, bulk range deletion, autocomplete and command history introduced many edge cases where it might not work as intended. Thus, we had to carefully define precedence and rejection conditions to avoid ambiguous behaviour. One concrete example would be range deletion whereby the original implementation was vulnerable to an integer overflow when the user supplied `MAX_INT`. Therefore, we had to intentionally change the counting variable to `long` in order to patch this bug/vulnerability. This also shows our rigorous testing process when we introduce new features.
+- **Validation consistency across fields:** Enforcing strict constraints for multiple fields and ensuring consistent error handling/messages required substantial effort, especially for boundary cases and invalid combinations of inputs. For instance, the autocomplete feature presented many edge case bugs that we had to remedy, such as `add x n` suggesting `/` or `add n/ x/ ` suggesting `p/` even though both commands entered were already invalid.
+- **Data and model evolution risks:** Adding new data fields and archive-related behaviour required careful updates across logic, model, storage and UI layers so existing data remains valid and behaviour stays backward compatible.
+
+#### Achievements
+
+- **Disciplined Git Workflow:** Followed a strict branch-based forking workflow, ensuring that the `master` branch remained stable at all times, with effective collaboration via pull requests and code reviews.
+- **Comprehensive Testing:** Ensured that code coverage did not drop below initial AB3 levels and documented equivalent partitions / boundary values for test cases in order to aid with future development.
+- **Code Quality Adherence:** Achieved a high degree of maintainability and quality by strictly following coding standards, design principles and *SLAPPING hard*.
+- **Rigorous Input Validation:** Implemented many validating methods to guarantee correctness especially for boundary values.
+
+#### Reuse
+CareSync being built on top of AB3, reuses a significant portion of AB3's architecture and codebase. These include the already existing MVC pattern architecture, command pattern architecture, Jackson-based JSON storage, JavaFX UI, JUnit test cases, Gradle configuration and documentation site structure. AB3's existing features such as `add` and `delete` were adapted to create CareSync's version, and JavaFX UI elements were added onto to allow for notes and visit date-times.

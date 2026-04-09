@@ -32,37 +32,39 @@ HiddenOutside ..> Ui
 
 UiManager .left.|> Ui
 UiManager -down-> "1" MainWindow
-MainWindow *-down->  "1" CommandBox
 MainWindow *-down-> "1" ResultDisplay
 MainWindow *-down-> "1" PersonListPanel
 MainWindow *-down-> "1" StatusBarFooter
+MainWindow *-down->  "1" CommandBox
 MainWindow -down-> "0..1" HelpWindow
 
 PersonListPanel -down-> "*" PersonCard
 CommandBox -down-> "1" CommandHistory
 HelpWindow .right.> HelpContentProvider
 
-MainWindow --|> UiPart
+MainWindow -left-|> UiPart
 
-PersonCard --|> UiPart
+PersonCard -down-|> UiPart
 
-PersonListPanel --|> UiPart
-ResultDisplay --|> UiPart
-StatusBarFooter --|> UiPart
+PersonListPanel -down-|> UiPart
+ResultDisplay -down-|> UiPart
+StatusBarFooter -down-|> UiPart
 
-CommandBox --|> UiPart
-HelpWindow --|> UiPart
+CommandBox -down-|> UiPart
+HelpWindow -down-|> UiPart
 
 PersonCard .right.> Model
 UiManager -right-> Logic
 MainWindow -left-> Logic
-CommandBox .right.> Logic
+CommandBox .down.> Logic
 HelpContentProvider .right.> Logic
-
 
 HelpWindow -[hidden]left- CommandBox
 CommandBox -[hidden]left- PersonListPanel
 PersonListPanel -[hidden]left- ResultDisplay
 ResultDisplay -[hidden]left- StatusBarFooter
+MainWindow -[hidden]right- Logic
+CommandBox -[hidden]right- Logic
+CommandBox -[hidden]right- Logic
 
 @enduml

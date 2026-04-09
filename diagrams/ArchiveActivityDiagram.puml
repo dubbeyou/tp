@@ -1,0 +1,24 @@
+@startuml
+skin rose
+skinparam ActivityFontSize 15
+skinparam ArrowFontSize 12
+
+start
+:User executes archive INDEX;
+
+if () then ([index is valid])
+    if () then ([person is not archived])
+        :Archive selected person;
+        :Refresh filtered list
+        using current predicate;
+        :Return success CommandResult;
+    else ([person already archived])
+        :Return already archived
+        CommandResult;
+    endif
+else ([invalid index])
+    :Return invalid index error;
+endif
+
+stop
+@enduml

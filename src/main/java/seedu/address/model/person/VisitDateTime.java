@@ -16,8 +16,8 @@ import java.util.Objects;
  */
 public class VisitDateTime {
 
-    public static final String MESSAGE_CONSTRAINTS = "Visit date and time must be a valid date and time in the format: "
-                    + "yyyy-MM-dd HH:mm (e.g., 2026-03-15 14:30)";
+    public static final String MESSAGE_CONSTRAINTS = "Visit date and time must be a valid future date and time in "
+                    + "the format: yyyy-MM-dd HH:mm (e.g., 2026-03-15 14:30)";
     public static final String MESSAGE_DATE_CONSTRAINTS = "Date must be a valid date in the format yyyy-MM-dd "
                     + "(e.g., 2026-03-15) or the keyword 'today'.";
 
@@ -133,4 +133,3 @@ public class VisitDateTime {
         return Objects.hashCode(value);
     }
 }
-

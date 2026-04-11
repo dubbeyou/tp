@@ -10,11 +10,12 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 public class Phone {
 
 
+    public static final int MIN_LENGTH = 3;
     public static final int MAX_LENGTH = 15;
     public static final String MESSAGE_CONSTRAINTS =
-            "Phone numbers should be at most " + MAX_LENGTH
-                    + " characters, contain only digits, plus (+), spaces, or hyphens (-), "
-                    + "and include at least one digit.";
+            "Phone numbers should be between " + MIN_LENGTH + " and " + MAX_LENGTH
+                    + " characters, start with a digit or plus (+), contain only digits, plus (+), spaces, or "
+                    + "hyphens (-), and include at least one digit.";
 
     /*
      * Regex breakdown:
@@ -22,7 +23,8 @@ public class Phone {
      * - (?=.*\\d)                    : must contain at least one digit (rejects only symbols/spaces)
      * - [0-9+ -]+                    : allows only digits, plus, spaces, and hyphens
      */
-    public static final String VALIDATION_REGEX = "(?=.{1," + MAX_LENGTH + "}$)(?=.*\\d)[0-9+ -]+";
+    public static final String VALIDATION_REGEX = "(?=.{" + MIN_LENGTH + "," + MAX_LENGTH
+            + "}$)(?=.*\\d)[0-9+][0-9+ -]{2," + (MAX_LENGTH - 1) + "}";
     public final String value;
 
     /**

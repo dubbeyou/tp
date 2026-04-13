@@ -255,7 +255,7 @@ Aspect: How archived data is represented
 1. Alternative 1 (current choice): Keep an archive flag in each Person. 
    * Pros: Minimal structural changes, straightforward persistence, low implementation overhead.
    * Cons: Filtering predicates must be applied consistently across commands.
-
+<br></br>
 2. Alternative 2: Move archived contacts into a separate collection.
    * Pros: Strong conceptual separation between active and archived contacts.
    * Cons: Higher complexity for `edit`, `find`, `delete`, indexing, and synchronization logic.

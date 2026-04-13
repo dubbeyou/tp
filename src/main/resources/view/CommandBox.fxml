@@ -2,10 +2,16 @@
 
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.geometry.Pos?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
 
-<StackPane styleClass="stack-pane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
-  <TextField fx:id="commandTextField" onAction="#handleCommandEntered" promptText="Enter command here..."/>
-  <Label fx:id="autocompleteHintLabel" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mouseTransparent="true" styleClass="autocomplete-ghost-text"/>
+<StackPane alignment="CENTER_LEFT" styleClass="stack-pane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+  <TextField fx:id="commandTextField" onAction="#handleCommandEntered" promptText="Enter command here..." StackPane.alignment="CENTER_LEFT"/>
+  <TextFlow fx:id="autocompleteHintFlow" maxWidth="1.7976931348623157E308" mouseTransparent="true" StackPane.alignment="CENTER_LEFT">
+    <Text fx:id="autocompleteHintPrefixText" styleClass="autocomplete-ghost-prefix" />
+    <Text fx:id="autocompleteHintSuffixText" styleClass="autocomplete-ghost-text" />
+  </TextFlow>
 </StackPane>
 

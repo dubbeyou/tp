@@ -6,6 +6,7 @@ import static seedu.address.logic.Messages.MESSAGE_INVALID_INDEX;
 import static seedu.address.logic.parser.FindCommandParser.KEYWORD_TODAY;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Collection;
 import java.util.HashSet;
@@ -181,7 +182,11 @@ public class ParserUtil {
             return new VisitDateTime(); // Return empty if not provided
         }
         try {
-            return new VisitDateTime(trimmedVisitDateTime);
+            VisitDateTime parsedVisitDateTime = new VisitDateTime(trimmedVisitDateTime);
+            if (!parsedVisitDateTime.getValue().isAfter(LocalDateTime.now())) {
+                throw new ParseException(VisitDateTime.MESSAGE_CONSTRAINTS);
+            }
+            return parsedVisitDateTime;
         } catch (IllegalArgumentException e) {
             throw new ParseException(VisitDateTime.MESSAGE_CONSTRAINTS);
         }

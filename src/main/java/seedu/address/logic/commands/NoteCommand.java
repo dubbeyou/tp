@@ -3,7 +3,6 @@ package seedu.address.logic.commands;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTE;
-import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
 import java.util.List;
 
@@ -57,7 +56,7 @@ public class NoteCommand extends Command {
                 personToEdit.getAddress(), note, personToEdit.getTags(), personToEdit.getVisitDateTime(),
                 personToEdit.isArchived());
         model.setPerson(personToEdit, editedPerson);
-        model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+        model.updateFilteredPersonList(model.getCurrentPredicate());
 
         return new CommandResult(updateNoteMsg(editedPerson));
     }

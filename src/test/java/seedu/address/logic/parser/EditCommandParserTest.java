@@ -262,4 +262,10 @@ public class EditCommandParserTest {
 
         assertParseSuccess(parser, userInput, expectedCommand);
     }
+
+    @Test
+    public void parse_nonFutureVisitDateTime_failure() {
+        // EP (invalid): editing to a non-future visit date-time should fail.
+        assertParseFailure(parser, "1 v/2000-01-01 10:00", VisitDateTime.MESSAGE_CONSTRAINTS);
+    }
 }

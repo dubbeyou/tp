@@ -92,7 +92,7 @@ public class TagCommand extends Command {
                 personToEdit.isArchived());
 
         model.setPerson(personToEdit, editedPerson);
-        model.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
+        model.updateFilteredPersonList(model.getCurrentPredicate());
         return new CommandResult(String.format(MESSAGE_TAG_PERSON_SUCCESS, Messages.format(editedPerson)));
     }
 

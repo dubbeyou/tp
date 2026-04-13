@@ -18,8 +18,9 @@
 - Jackson - JSON parser: https://github.com/FasterXML/jackson
 - JavaFX - for UI development: https://openjfx.io
 - JUnit5 - testing framework: https://github.com/junit-team/junit5
-- Markbind - for website generation: https://markbind.org
+- MarkBind - for website generation: https://markbind.org
 - PlantUML - for diagram creation: https://plantuml.com
+- GitHub Copilot - for autocompleting code, drafting code snippets and troubleshooting/debugging
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -63,7 +64,7 @@ The *Sequence Diagram* below shows how the components interact with each other f
 Each of the four main components (also shown in the diagram above),
 
 * defines its *API* in an `interface` with the same name as the Component.
-* implements its functionality using a concrete `{Component Name}Manager` class (which follows the corresponding API `interface` mentioned in the previous point.
+* implements its functionality using a concrete `{Component Name}Manager` class (which follows the corresponding API `interface` mentioned in the previous point).
 
 For example, the `Logic` component defines its API in the `Logic.java` interface and implements its functionality using the `LogicManager.java` class which follows the `Logic` interface. Other components interact with a given component through its interface rather than the concrete class (reason: to prevent outside component's being coupled to the implementation of a component), as illustrated in the (partial) class diagram below.
 
@@ -300,41 +301,40 @@ details as well as allow them to easily track upcoming visits with the various f
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​                                    | I want to …​                    | So that I can…​                                           |
-|----------|--------------------------------------------|---------------------------------|-----------------------------------------------------------|
-| `* * *` | user | add a contact with basic details | quickly identify who is being visited |
-| `* * *` | user | delete a contact | remove contacts that are no longer needed |
-| `* * *` | user | store an address with each contact | know where to go for home visits |
-| `* * *` | user | set a visit date | know when to go for home visits |
-| `* * *` | user | see visit date and time clearly | manage daily schedule effectively |
-| `* * *` | user | add tags to differentiate clients and services | retrieve relevant contact details quickly |
-| `* * *` | user | add tags to differentiate case ID / client groups | retrieve relevant contact details quickly |
-| `* * *` | user | filter contacts based on tags | quickly view related contacts based on tag |
-| `* * *` | user | search for a name | reference contacts clearly |
-| `* *` | user | see upcoming visits alongside past ones | plan follow-ups effectively |
-| `* *` | user | have a clean and simple layout | find information quickly between visits |
-| `* *` | user | sort contacts by name or ID | find contacts easily |
-| `* *` | user | mark a contact’s status (e.g. stable, urgent) | prioritise my work |
-| `* *` | user | add a visit note to a contact | remember the purpose of the visit |
-| `* *` | user | pin contacts | identify important contacts easily |
-| `* *` | user | reuse past commands | execute commands faster |
-| `* *` | user | autocomplete commands | execute commands faster |
-| `* *` | user | undo commands | undo any wrong changes |
-| `* *` | user | archive contacts | hide irrelavant contacts without deleting them |
-| `* *` | user | list archived contacts | view hidden contacts |
-| `* *` | user | unarchive contacts | restore hidden contacts to the main contact list |
-| `* *` | expert user | add aliases to commands | execute commands faster |
-| `* *` | new user | see sample commands | know valid command formats |
-| `*` | expert user | combine commands | execute commands efficiently |
-| `*` | user | add a specific visit location | quickly reference where the visit takes place |
-| `*` | user | set visit type (e.g. consultation, remote) | understand the nature of the visit |
-| `*` | user | specify the visit duration | plan my time realistically |
-| `*` | user | view completed visits | understand my visit history |
-| `*` | user | mark a visit as planned, completed, or cancelled | track visit status and outcomes |
-| `*` | user | be sure that visit records remains unchanged | be held accountable for the visit |
-| `*` | new user | view a list of common commands when opening the app | refer to instructions without using an external manual |
-| `*` | new user | transfer my contact details from my phone’s contact list to CareSync | transition to using CareSync easily |
+**Legend:** ✓ = fully implemented; ✗ = not implemented or partially implemented
 
+| Priority | As a …​        | I want to …​                                               | So that I can…​                                        | Implemented |
+|----------|----------------|------------------------------------------------------------|--------------------------------------------------------|-------------|
+| `* * *`  | user           | add a contact with basic details                           | quickly identify who is being visited                  | ✓           |
+| `* * *`  | user           | delete a contact                                           | remove contacts that are no longer needed              | ✓           |
+| `* * *`  | user           | store an address with each contact                         | know where to go for home visits                       | ✓           |
+| `* * *`  | user           | set a visit date                                           | know when to go for home visits                        | ✓           |
+| `* * *`  | user           | see visit date and time clearly                            | manage daily schedule effectively                      | ✓           |
+| `* * *`  | user           | add tags to differentiate clients and services             | retrieve relevant contact details quickly              | ✓           |
+| `* * *`  | user           | add tags to differentiate case ID / client groups          | retrieve relevant contact details quickly              | ✓           |
+| `* * *`  | user           | filter contacts based on tags                              | quickly view related contacts based on tag             | ✓           |
+| `* * *`  | user           | search for a name                                          | reference contacts clearly                             | ✓           |
+| `* *`    | user           | see upcoming visits alongside past ones                    | plan follow-ups effectively                            | ✗           | 
+| `* *`    | user           | have a clean and simple layout                             | find information quickly between visits                | ✓           |
+| `* *`    | user           | sort contacts by name or visit date                        | find contacts easily                                   | ✓           |
+| `* *`    | user           | mark a contact’s status (e.g. stable, urgent)              | prioritise my work                                     | ✗           |
+| `* *`    | user           | add a visit note to a contact                              | remember the purpose of the visit                      | ✓           |
+| `* *`    | user           | pin contacts                                               | identify important contacts easily                     | ✗           |
+| `* *`    | user           | reuse past commands                                        | execute commands faster                                | ✓           |
+| `* *`    | user           | autocomplete commands                                      | execute commands faster                                | ✓           |
+| `* *`    | user           | undo commands                                              | undo any wrong changes                                 | ✗           |
+| `* *`    | user           | archive contacts                                           | hide irrelevant contacts without deleting them         | ✓           |
+| `* *`    | user           | list archived contacts                                     | view hidden contacts                                   | ✓           |
+| `* *`    | user           | unarchive contacts                                         | restore hidden contacts to the main contact list       | ✓           |
+| `* *`    | expert user    | add aliases to commands                                    | execute commands faster                                | ✗           |
+| `* *`    | new user       | view a list of common commands when opening the app        | refer to instructions without using an external manual | ✓           |
+| `*`      | expert user    | combine commands                                           | execute commands efficiently                           | ✗           |
+| `*`      | user           | set visit type (e.g. consultation, remote)                 | understand the nature of the vist                      | ✗           |
+| `*`      | user           | specify the visit duration                                 | plan my time realistically                             | ✗           |
+| `*`      | user           | view completed visits                                      | understand my visit history                            | ✗           |
+| `*`      | user           | mark a visit as planned, completed, or cancelled           | track visit status and outcomes                        | ✗           |
+| `*`      | user           | be sure that visit records remain unchanged                | be held accountable for the visit                      | ✗           |
+| `*`      | returning user | import contact details from an existing CareSync JSON file | continue using CareSync seamlessly                     | ✓           |
 
 *{More may be added in the future}*
 
@@ -427,7 +427,7 @@ If successful, the specified contact(s) will be permanently removed from CareSyn
 
 1.  CareSync displays contact(s).
 2.  User specifies the ***ID(s) or Range of ID(s)*** of the contacts to be deleted (e.g., `1 3-5`).
-3.  CareSync validates all specified contacts indexes.
+3.  CareSync validates all specified contact indexes.
 4.  CareSync removes the contact(s) from storage.
 5.  CareSync displays a success message and an updated list.
 
@@ -605,7 +605,7 @@ If successful, the specified contact(s) will be permanently removed from CareSyn
 
     Use case resumes at step 3.
 
-**Use case: UC13 -Access Command History**
+**Use case: UC13 - Access Command History**
 
 **MSS**
 
@@ -631,8 +631,7 @@ If successful, the specified contact(s) will be permanently removed from CareSyn
 ### Non-Functional Requirements
 
 1. Should work on any mainstream OS as long as it has Java 17 or above installed.
-2. A user with above average typing speed for regular English text (i.e. not code, not system
-admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
+2. A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
 3. The system should respond to user commands within 2 seconds under normal usage.
 4. The system should support at least 20 contacts without noticeable performance degradation.
 5. Filtering and search operations should complete within 2 seconds.
@@ -645,9 +644,7 @@ admin commands) should be able to accomplish most of the tasks faster using comm
 12. Contact names shall not be empty.
 13. Phone numbers shall follow a defined format.
 14. Dates and times shall follow a consistent format.
-15. Duplicate contacts shall not be allowed unless explicitly permitted.
-14. The system architecture should allow future expansion of features (e.g., additional
-commands or data fields) without requiring major restructuring of existing components.
+15. The system architecture should allow future expansion of features (e.g., additional commands or data fields) without requiring major restructuring of existing components.
 
 *{More may be added in the future}*
 
@@ -787,7 +784,7 @@ Steps:
 2. Run the same command again.
 
 Expected:
-- Second command fails with message: `This contact already exists in the address book.`
+- Second command fails with message: `This contact already exists in the address book`
 - No duplicate contact is added.
 
 !!**Negative Test Case 2: Invalid name**!!
@@ -1150,7 +1147,11 @@ Steps:
 1. Run `note 1`
 
 Expected:
+<<<<<<< appendix
 - Command fails with message: `note: Edits the note of the contact...`
+=======
+- Command fails with message: `Invalid command format! note: Edits the note of the contact...`
+>>>>>>> master
 
 !!**Negative Test Case 2: Invalid index**!!
 
@@ -1264,7 +1265,7 @@ Steps:
 1. Run `delete 5-2`
 
 Expected:
-- Command fails with message: `Invalid range: start index must be less than or equal to end index.`
+- Command fails with message: `Invalid range. Start index must be less than or equal to end index.`
 
 !!**Negative Test Case 2: Out-of-range index in bulk delete**!!
 
@@ -1518,6 +1519,16 @@ Team Size: 5
 4. **Enforce exact matching for Case ID search:** Currently, the tag search function uses partial prefix matching, which means that searching for a specific case (e.g., `caseid1`) will incorrectly return irrelevant cases, such as `caseid10` and `caseid11`. This contradicts the system's definition of case IDs as unique identifiers. We plan to implement strict exact matching specifically for case ID tag to retrieve the exact target cases.
 5. **Enhance email validation:** Currently, the application accepts invalid email formats (e.g., missing domains), leading to unusable data for contacts. We plan to enforce stricter validation, requiring complete domain names to ensure all stored email addresses are accurate and valid.
 --------------------------------------------------------------------------------------------------------------------
+## **Appendix: Planned Enhancement**
+Team Size: 5
+
+6. **Allow contacts with identical names but different details:** Currently, the application does not allow multiple contacts with the same name even if their other details differ. To better reflect real-world cases where people can have identical names, we plan to allow multiple contacts with the same name as long as other identifying fields (e.g., phone number, address) are different.
+7. **Improve response command box usability:** Currently, the response text box requires horizontal scrolling to view long messages and is too small, making it difficult for users to read outputs without excessive scrolling. We plan to modify the UI so that the text box wraps text and supports vertical scrolling, as well as increase its size to display more content at once for better readability.
+8. **Enable sorting in archived contact list:** Currently, users are unable to sort contacts in the archived list. We plan to add sorting functionality (e.g. by name and visit date) to the archived contacts list to improve usability and navigation. For example, users can enter `list-archive s/name` to view archived contacts sorted by name or `list-archive s/visit` to view archived contacts sorted by visit date.
+9. **Allow text selection in help window:** Currently, users are unable to select or copy text from the help window. We plan to enable text selection so that users can copy commands or instructions easily for reference.
+10. **Support bulk archive and unarchive of contacts:** Currently, users can only archive or unarchive contacts individually. We plan to allow users to perform bulk archive and unarchive actions on multiple contacts in a single command to improve efficiency. For example, users can enter `archive 1 3-5 8` to archive multiple contacts at once or `unarchive 1 4 6` to unarchive multiple contacts at once.
+
+--------------------------------------------------------------------------------------------------------------------
 
 ## **Appendix: Effort**
 
@@ -1543,7 +1554,7 @@ CareSync builds upon these existing features and introduces even more complex fe
 - Cycle through past commands for reuse
 
 Additionally, CareSync introduces constraints of higher complexity in order to reduce bugs and ensure consistency:
-- `NAME`, `PHONE_NUMBER`, `EMAIL`, `ADDRESS`, `NOTE` - character validity and length constraints
+- `NAME`, `PHONE`, `EMAIL`, `ADDRESS`, `NOTE` - character validity and length constraints
 - `TAG` - case-insensitive (for duplicate removal) and length constraints
 - `find` command - mutual exclusivity for search modes and usage of special keywords (i.e. `today`)
 - `delete` command - range index validation
@@ -1563,4 +1574,4 @@ Compared to AB3's single entity workflow, CareSync required more cross-feature v
 - **Rigorous Input Validation:** Implemented many validating methods to guarantee correctness especially for boundary values.
 
 #### Reuse
-CareSync being built on top of AB3, reuses a significant portion of AB3's architecture and codebase. These include the already existing MVC pattern architecture, command pattern architecture, Jackson-based JSON storage, JavaFX UI, JUnit test cases, Gradle configuration and documentation site structure. AB3's existing features such as `add` and `delete` were adapted to create CareSync's version, and JavaFX UI elements were added onto to allow for notes and visit date-times.
+CareSync being built on top of AB3, reuses a significant portion of AB3's architecture and codebase. These include the already existing MVC pattern architecture, command pattern architecture, Jackson-based JSON storage, JavaFX UI, JUnit test cases, Gradle configuration and documentation site structure. AB3's existing features such as `add` and `delete` were adapted to create CareSync's version, and JavaFX UI elements were added to allow for notes and visit date-times. GitHub Copilot was used to generate standard template code snippets, JavaDoc comments and JUnit test cases.

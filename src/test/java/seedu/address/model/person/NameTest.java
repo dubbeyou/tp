@@ -23,6 +23,26 @@ public class NameTest {
     }
 
     @Test
+    public void isSameName() {
+        Name name = new Name("Alice");
+
+        // EP: same object -> returns true
+        assertTrue(name.isSameName(name));
+
+        // EP: null input -> returns false
+        assertFalse(name.isSameName(null));
+
+        // EP: same name, same case -> returns true
+        assertTrue(name.isSameName(new Name("Alice")));
+
+        // EP: same name, different case -> returns true (case-insensitive)
+        assertTrue(name.isSameName(new Name("alice")));
+
+        // EP: different name -> returns false
+        assertFalse(name.isSameName(new Name("Bob")));
+    }
+
+    @Test
     public void isValidName() {
         // null name
         assertThrows(NullPointerException.class, () -> Name.isValidName(null));

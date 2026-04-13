@@ -5,12 +5,12 @@ import java.util.logging.Logger;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.AutocompleteProvider;
 import seedu.address.logic.commands.CommandResult;
@@ -26,6 +26,7 @@ public class CommandBox extends UiPart<Region> {
     private static final Logger logger = LogsCenter.getLogger(CommandBox.class);
     private static final String EMPTY_TEXT = "";
     private static final double AUTOCOMPLETE_HINT_OFFSET = 12.0;
+    private static final double AUTOCOMPLETE_HINT_VERTICAL_OFFSET = 7.5;
     private static final String FXML = "CommandBox.fxml";
 
     private final CommandExecutor commandExecutor;
@@ -35,7 +36,13 @@ public class CommandBox extends UiPart<Region> {
     private TextField commandTextField;
 
     @FXML
-    private Label autocompleteHintLabel;
+    private TextFlow autocompleteHintFlow;
+
+    @FXML
+    private Text autocompleteHintPrefixText;
+
+    @FXML
+    private Text autocompleteHintSuffixText;
 
     /**
      * Creates a {@code CommandBox} with the given {@code CommandExecutor}.
@@ -43,6 +50,9 @@ public class CommandBox extends UiPart<Region> {
     public CommandBox(CommandExecutor commandExecutor) {
         super(FXML);
         this.commandExecutor = commandExecutor;
+        autocompleteHintFlow.prefWidthProperty().bind(commandTextField.widthProperty());
+        autocompleteHintFlow.setTranslateX(AUTOCOMPLETE_HINT_OFFSET);
+        autocompleteHintFlow.setTranslateY(AUTOCOMPLETE_HINT_VERTICAL_OFFSET);
         commandTextField.textProperty().addListener((unused1, unused2, unused3) -> handleTextChanged());
         commandTextField.caretPositionProperty().addListener((unused1, unused2, unused3) -> updateAutocompleteHint());
         commandTextField.focusedProperty().addListener((unused1, unused2, unused3) -> updateAutocompleteHint());
@@ -150,22 +160,16 @@ public class CommandBox extends UiPart<Region> {
         assert suggestion.startsWith(userInput) : "Autocomplete suggestion must extend user input";
 
         String suffix = suggestion.substring(userInput.length());
-        setHintText(suffix, computeAutocompleteHintOffset(userInput));
+        setHintText(userInput, suffix);
     }
 
     private void clearAutocompleteHint() {
-        setHintText(EMPTY_TEXT, AUTOCOMPLETE_HINT_OFFSET);
+        setHintText(EMPTY_TEXT, EMPTY_TEXT);
     }
 
-    private void setHintText(String text, double offset) {
-        autocompleteHintLabel.setText(text);
-        autocompleteHintLabel.setTranslateX(offset);
-    }
-
-    private double computeAutocompleteHintOffset(String userInput) {
-        Text textHelper = new Text(userInput);
-        textHelper.setFont(commandTextField.getFont());
-        return AUTOCOMPLETE_HINT_OFFSET + textHelper.getLayoutBounds().getWidth();
+    private void setHintText(String prefix, String suffix) {
+        autocompleteHintPrefixText.setText(prefix);
+        autocompleteHintSuffixText.setText(suffix);
     }
 
     /**

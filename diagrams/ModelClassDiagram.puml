@@ -58,8 +58,6 @@ Person *--> "1" Note
 Person *--> "1" VisitDateTime
 Person *--> "*" Tag
 
-Person -[hidden]up--> I
-UniquePersonList -[hidden]right-> I
 
 Name -[hidden]right-> Phone
 Phone -[hidden]right-> Address

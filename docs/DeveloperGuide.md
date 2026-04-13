@@ -1278,7 +1278,7 @@ Steps:
 1. Run `delete a`
 
 Expected:
-- Command fails with message: `Invalid input. Only numbers and ranges like 1 or 3-5 are allowed.`
+- Command fails with message: `Invalid input. Only positive integers and ranges like 1 or 3-5 are allowed.`
 
 !!**Negative Test Case 4: Range too large**!!
 

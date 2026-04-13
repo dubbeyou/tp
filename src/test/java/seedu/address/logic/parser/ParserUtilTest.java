@@ -9,6 +9,7 @@ import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -51,7 +52,10 @@ public class ParserUtilTest {
     private static final String VALID_NOTE = "Meet client at lobby.";
     private static final String VALID_TAG_1 = "friend";
     private static final String VALID_TAG_2 = "neighbour";
-    private static final String VALID_VISIT_DATE_TIME = "2026-03-15 14:30";
+    private static final String VALID_VISIT_DATE_TIME = LocalDateTime.now().plusDays(30)
+            .withSecond(0)
+            .withNano(0)
+            .format(VisitDateTime.INPUT_FORMATTER);
 
     private static final String WHITESPACE = " \t\r\n";
 
@@ -324,15 +328,30 @@ public class ParserUtilTest {
     @Test
     public void parseVisitDateTime_validInput_success() throws Exception {
         // EP (valid): normal accepted datetime.
-        VisitDateTime visitDateTime = ParserUtil.parseVisitDateTime("2026-12-01 14:00");
+        String futureVisitDateTime = LocalDateTime.now().plusDays(7)
+                .withSecond(0)
+                .withNano(0)
+                .format(VisitDateTime.INPUT_FORMATTER);
+        VisitDateTime visitDateTime = ParserUtil.parseVisitDateTime(futureVisitDateTime);
         assertTrue(visitDateTime.isPresent());
     }
 
     @Test
     public void parseVisitDateTime_permissiveInput_returnsNormalizedVisitDateTime() throws Exception {
         // BVA: month-end overflow and 24:00 rollover coercion.
-        assertEquals("2026-04-30 14:00", ParserUtil.parseVisitDateTime("2026-04-31 14:00").toString());
-        assertEquals("2026-12-02 00:00", ParserUtil.parseVisitDateTime("2026-12-01 24:00").toString());
+        assertEquals("2099-04-30 14:00", ParserUtil.parseVisitDateTime("2099-04-31 14:00").toString());
+        assertEquals("2099-12-02 00:00", ParserUtil.parseVisitDateTime("2099-12-01 24:00").toString());
+    }
+
+    @Test
+    public void parseVisitDateTime_nonFutureInput_throwsParseException() {
+        // EP (invalid): non-future datetime should be rejected for visit scheduling.
+        String nonFutureVisitDateTime = LocalDateTime.now().minusMinutes(1)
+                .withSecond(0)
+                .withNano(0)
+                .format(VisitDateTime.INPUT_FORMATTER);
+        assertThrows(ParseException.class, VisitDateTime.MESSAGE_CONSTRAINTS, ()
+                -> ParserUtil.parseVisitDateTime(nonFutureVisitDateTime));
     }
 
     @Test
@@ -367,7 +386,7 @@ public class ParserUtilTest {
     public void parseDateOrToday_todayKeyword_returnsToday() throws Exception {
         // EP (valid): today keyword in lower/upper case.
         assertEquals(LocalDate.now(), ParserUtil.parseDateOrToday("today"));
-        assertEquals(LocalDate.now(), ParserUtil.parseDateOrToday("  TODAY  ")); // to check case insensitive
+        assertEquals(LocalDate.now(), ParserUtil.parseDateOrToday("  TODAY  ")); // to check case-insensitive
     }
 
     @Test

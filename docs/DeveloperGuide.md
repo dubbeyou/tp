@@ -1,7 +1,7 @@
 ---
-  layout: default.md
-  title: "Developer Guide"
-  pageNav: 3
+layout: default.md
+title: "Developer Guide"
+pageNav: 3
 ---
 
 # CareSync Developer Guide
@@ -1147,11 +1147,7 @@ Steps:
 1. Run `note 1`
 
 Expected:
-<<<<<<< appendix
-- Command fails with message: `note: Edits the note of the contact...`
-=======
 - Command fails with message: `Invalid command format! note: Edits the note of the contact...`
->>>>>>> master
 
 !!**Negative Test Case 2: Invalid index**!!
 
@@ -1513,15 +1509,12 @@ Expected:
 --------------------------------------------------------------------------------------------------------------------
 ## **Appendix: Planned Enhancement**
 Team Size: 5
+
 1. **Adjust name validation constraints:** The current regex rejects legitimate names (e.g., names contain hyphens), preventing record accurate details for clients with diverse names. We will update the validation logic based on actual needs to accept a wider range of naming conventions.
 2. **Fix sorting list feature flaws:** Currently, since the application allows users to add past dates for next visits, sorting by date will place past dates at the top, forcing users to scroll past irrelevant data. We plan to add a separate section specifically for displaying past visit dates, ensuring the list sorted by next visit date displays effectively.
 3. **Add confirmation prompts for destructive actions:** Currently, the application executes the `clear` and `delete` commands immediately without any warning, increasing the risk of accidental data loss. We plan to require a mandatory `--force` flag for clearing data or deleting more than 5 contacts at once. If a user attempts these actions without the flag, the system will reject and display a warning (e.g., "Warning: This action cannot be undone, use `--force` to confirm.").
 4. **Enforce exact matching for Case ID search:** Currently, the tag search function uses partial prefix matching, which means that searching for a specific case (e.g., `caseid1`) will incorrectly return irrelevant cases, such as `caseid10` and `caseid11`. This contradicts the system's definition of case IDs as unique identifiers. We plan to implement strict exact matching specifically for case ID tag to retrieve the exact target cases.
 5. **Enhance email validation:** Currently, the application accepts invalid email formats (e.g., missing domains), leading to unusable data for contacts. We plan to enforce stricter validation, requiring complete domain names to ensure all stored email addresses are accurate and valid.
---------------------------------------------------------------------------------------------------------------------
-## **Appendix: Planned Enhancement**
-Team Size: 5
-
 6. **Allow contacts with identical names but different details:** Currently, the application does not allow multiple contacts with the same name even if their other details differ. To better reflect real-world cases where people can have identical names, we plan to allow multiple contacts with the same name as long as other identifying fields (e.g., phone number, address) are different.
 7. **Improve response command box usability:** Currently, the response text box requires horizontal scrolling to view long messages and is too small, making it difficult for users to read outputs without excessive scrolling. We plan to modify the UI so that the text box wraps text and supports vertical scrolling, as well as increase its size to display more content at once for better readability.
 8. **Enable sorting in archived contact list:** Currently, users are unable to sort contacts in the archived list. We plan to add sorting functionality (e.g. by name and visit date) to the archived contacts list to improve usability and navigation. For example, users can enter `list-archive s/name` to view archived contacts sorted by name or `list-archive s/visit` to view archived contacts sorted by visit date.

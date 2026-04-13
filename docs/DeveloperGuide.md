@@ -18,7 +18,7 @@
 - Jackson - JSON parser: https://github.com/FasterXML/jackson
 - JavaFX - for UI development: https://openjfx.io
 - JUnit5 - testing framework: https://github.com/junit-team/junit5
-- Markbind - for website generation: https://markbind.org
+- MarkBind - for website generation: https://markbind.org
 - PlantUML - for diagram creation: https://plantuml.com
 
 --------------------------------------------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ The *Sequence Diagram* below shows how the components interact with each other f
 Each of the four main components (also shown in the diagram above),
 
 * defines its *API* in an `interface` with the same name as the Component.
-* implements its functionality using a concrete `{Component Name}Manager` class (which follows the corresponding API `interface` mentioned in the previous point.
+* implements its functionality using a concrete `{Component Name}Manager` class (which follows the corresponding API `interface` mentioned in the previous point).
 
 For example, the `Logic` component defines its API in the `Logic.java` interface and implements its functionality using the `LogicManager.java` class which follows the `Logic` interface. Other components interact with a given component through its interface rather than the concrete class (reason: to prevent outside component's being coupled to the implementation of a component), as illustrated in the (partial) class diagram below.
 
@@ -320,7 +320,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* *` | user | reuse past commands | execute commands faster |
 | `* *` | user | autocomplete commands | execute commands faster |
 | `* *` | user | undo commands | undo any wrong changes |
-| `* *` | user | archive contacts | hide irrelavant contacts without deleting them |
+| `* *` | user | archive contacts | hide irrelevant contacts without deleting them |
 | `* *` | user | list archived contacts | view hidden contacts |
 | `* *` | user | unarchive contacts | restore hidden contacts to the main contact list |
 | `* *` | expert user | add aliases to commands | execute commands faster |
@@ -331,7 +331,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `*` | user | specify the visit duration | plan my time realistically |
 | `*` | user | view completed visits | understand my visit history |
 | `*` | user | mark a visit as planned, completed, or cancelled | track visit status and outcomes |
-| `*` | user | be sure that visit records remains unchanged | be held accountable for the visit |
+| `*` | user | be sure that visit records remain unchanged | be held accountable for the visit |
 | `*` | new user | view a list of common commands when opening the app | refer to instructions without using an external manual |
 | `*` | new user | transfer my contact details from my phone’s contact list to CareSync | transition to using CareSync easily |
 
@@ -427,7 +427,7 @@ If successful, the specified contact(s) will be permanently removed from CareSyn
 
 1.  CareSync displays contact(s).
 2.  User specifies the ***ID(s) or Range of ID(s)*** of the contacts to be deleted (e.g., `1 3-5`).
-3.  CareSync validates all specified contacts indexes.
+3.  CareSync validates all specified contact indexes.
 4.  CareSync removes the contact(s) from storage.
 5.  CareSync displays a success message and an updated list.
 
@@ -784,7 +784,7 @@ Steps:
 2. Run the same command again.
 
 Expected:
-- Second command fails with message: `This contact already exists in the address book.`
+- Second command fails with message: `This contact already exists in the address book`
 - No duplicate contact is added.
 
 !!**Negative Test Case 2: Invalid name**!!
@@ -1261,7 +1261,7 @@ Steps:
 1. Run `delete 5-2`
 
 Expected:
-- Command fails with message: `Invalid range: start index must be less than or equal to end index.`
+- Command fails with message: `Invalid range. Start index must be less than or equal to end index.`
 
 !!**Negative Test Case 2: Out-of-range index in bulk delete**!!
 
@@ -1551,4 +1551,4 @@ Compared to AB3's single entity workflow, CareSync required more cross-feature v
 - **Rigorous Input Validation:** Implemented many validating methods to guarantee correctness especially for boundary values.
 
 #### Reuse
-CareSync being built on top of AB3, reuses a significant portion of AB3's architecture and codebase. These include the already existing MVC pattern architecture, command pattern architecture, Jackson-based JSON storage, JavaFX UI, JUnit test cases, Gradle configuration and documentation site structure. AB3's existing features such as `add` and `delete` were adapted to create CareSync's version, and JavaFX UI elements were added onto to allow for notes and visit date-times. Github Copilot was used to generate standard template code snippets, JavaDoc comments and JUnit test cases.
+CareSync being built on top of AB3, reuses a significant portion of AB3's architecture and codebase. These include the already existing MVC pattern architecture, command pattern architecture, Jackson-based JSON storage, JavaFX UI, JUnit test cases, Gradle configuration and documentation site structure. AB3's existing features such as `add` and `delete` were adapted to create CareSync's version, and JavaFX UI elements were added to allow for notes and visit date-times. GitHub Copilot was used to generate standard template code snippets, JavaDoc comments and JUnit test cases.

@@ -19,7 +19,7 @@ public class Messages {
     public static final String MESSAGE_DUPLICATE_FIELDS =
             "Multiple values provided for the same field. Each field should only be specified once: ";
     public static final String MESSAGE_INVALID_INDEX =
-            "Invalid index. Index must be a non-zero positive number (1, 2, 3...).";
+            "Invalid index. Index must be a non-zero positive integer (1, 2, 3...).";
     public static final String MESSAGE_INDEX_TOO_LARGE =
             "Index too large. Please specify a valid index.";
 

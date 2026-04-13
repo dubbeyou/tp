@@ -25,7 +25,7 @@ public class Messages {
 
     // Custom Errors for Bulk Delete
     public static final String MESSAGE_INVALID_TOKEN =
-            "Invalid input. Only numbers and ranges like 1 or 3-5 are allowed.";
+            "Invalid input. Only integers and ranges like 1 or 3-5 are allowed.";
 
     public static final String MESSAGE_INVALID_RANGE =
             "Invalid range. Start index must be less than or equal to end index.";

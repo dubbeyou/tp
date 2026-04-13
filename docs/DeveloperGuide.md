@@ -113,10 +113,10 @@ The sequence diagram below illustrates the interactions within the `Logic` compo
 How the `Logic` component works:
 
 1. When `Logic` is called upon to execute a command, it is passed to an `AddressBookParser` object which in turn creates a parser that matches the command (e.g., `DeleteCommandParser`) and uses it to parse the command.
-1. This results in a `Command` object (more precisely, an object of one of its subclasses e.g., `DeleteCommand`) which is executed by the `LogicManager`.
-1. The command can communicate with the `Model` when it is executed (e.g. to delete a person).<br>
+2. This results in a `Command` object (more precisely, an object of one of its subclasses e.g., `DeleteCommand`) which is executed by the `LogicManager`.
+3. The command can communicate with the `Model` when it is executed (e.g. to delete a person).<br>
    Note that although this is shown as a single step in the diagram above (for simplicity), in the code it can take several interactions (between the command object and the `Model`) to achieve.
-1. The result of the command execution is encapsulated as a `CommandResult` object which is returned back from `Logic`.
+4. The result of the command execution is encapsulated as a `CommandResult` object which is returned back from `Logic`.
 
 Here are the other classes in `Logic` (omitted from the class diagram above) that are used for parsing a user command:
 
@@ -199,18 +199,18 @@ The mechanism uses the following Model operations:
 
 Given below is an example usage scenario and how the archive mechanism behaves at each step.
 
-Step 1. The user executes `archive 1`.
+**Step 1.** The user executes `archive 1`.
 The `archive` command validates the index against the current filtered list and archives the selected contact.
 
-Step 2. The command refreshes the filtered list using the current predicate so the UI reflects the updated state.
+**Step 2.** The command refreshes the filtered list using the current predicate so the UI reflects the updated state.
 
-Step 3. The user executes `list-archive`.
+**Step 3.** The user executes `list-archive`.
 The displayed list is filtered to show only archived contacts.
 
-Step 4. The user executes `unarchive 1` from the archived list.
+**Step 4.** The user executes `unarchive 1` from the archived list.
 The `unarchive` command marks the selected contact as active again and refreshes the list.
 
-Step 5. The command result is returned to `Logic`, and `Logic` persists the updated address book through `Storage`.
+**Step 5.** The command result is returned to `Logic`, and `Logic` persists the updated address book through `Storage`.
 
 The following sequence diagram shows how an `archive` operation goes through the `Logic` component:
 
@@ -231,6 +231,7 @@ The `unarchive` command does the opposite. It calls `unarchivePerson(person)`, w
 <box type="info" seamless>
 
 **Note:** If the selected index is invalid, the command returns an error instead of modifying data.
+
 **Note:** `list-archive` filtering is applied through `updateFilteredPersonList(predicate)`, not inside `archivePerson(...)`.
 
 </box>
@@ -251,14 +252,13 @@ The following activity diagram summarizes what happens when a user executes the 
 
 Aspect: How archived data is represented
 
-1. Alternative 1 (current choice): Keep an archive flag in each Person.
-   - Pros: Minimal structural changes, straightforward persistence, low implementation overhead.
-   - Cons: Filtering predicates must be applied consistently across commands.
-
+1. Alternative 1 (current choice): Keep an archive flag in each Person. 
+   * Pros: Minimal structural changes, straightforward persistence, low implementation overhead.
+   * Cons: Filtering predicates must be applied consistently across commands.
 
 2. Alternative 2: Move archived contacts into a separate collection.
-   - Pros: Strong conceptual separation between active and archived contacts.
-   - Cons: Higher complexity for edit, find, delete, indexing, and synchronization logic.
+   * Pros: Strong conceptual separation between active and archived contacts.
+   * Cons: Higher complexity for `edit`, `find`, `delete`, indexing, and synchronization logic.
 
 {more aspects and alternatives to be added}
 

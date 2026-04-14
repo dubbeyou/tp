@@ -512,7 +512,7 @@ Action     | Format                                                             
 
 **Additional Info:**
 - Parameter fields will be trimmed (i.e. whitespaces (` `) at the start and end will be removed)
-- Empty parameters used in `edit` and `note` will attempt to clear the respective field
+- Empty parameters used in `edit` and `note` will attempt to clear the respective field. For `edit`, this only applies to a contact's optional fields `nt/`, `v/`, and `t/`
 </box>
 
 - **INDEX**: Refers to the index number shown in the displayed contact list.
